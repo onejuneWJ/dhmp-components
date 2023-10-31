@@ -18,6 +18,13 @@ public class NumberConvertUtil {
      * @throws NumberFormatException 值无法转换
      */
     public static Long convertToLong(Object value) throws NumberFormatException {
+        return convertToLong(value, 0);
+    }
+
+    public static Long convertToLong(Object value, long defaultValue) throws NumberFormatException {
+        if (null == value) {
+            return defaultValue;
+        }
         if (value instanceof Number number) {
             return number.longValue();
         }
@@ -34,10 +41,14 @@ public class NumberConvertUtil {
      * @return {@link Long}类型的值
      */
     public static Long convertToLongSafe(Object value) {
+        return convertToLongSafe(value, 0L);
+    }
+
+    public static Long convertToLongSafe(Object value, long defaultValue) {
         try {
-            return convertToLong(value);
+            return convertToLong(value, defaultValue);
         } catch (NumberFormatException e) {
-            return 0L;
+            return defaultValue;
         }
     }
 
@@ -50,6 +61,13 @@ public class NumberConvertUtil {
      * @throws NumberFormatException 值无法转换
      */
     public static Integer convertToInteger(Object value) throws NumberFormatException {
+        return convertToInteger(value, 0);
+    }
+
+    public static Integer convertToInteger(Object value, int defaultValue) throws NumberFormatException {
+        if (null == value) {
+            return defaultValue;
+        }
 
         if (value instanceof Number number) {
             return number.intValue();
@@ -67,10 +85,14 @@ public class NumberConvertUtil {
      * @return {@link Integer}类型的值
      */
     public static Integer convertToIntegerSafe(Object value) {
+        return convertToIntegerSafe(value, 0);
+    }
+
+    public static Integer convertToIntegerSafe(Object value, int defaultValue) {
         try {
-            return convertToInteger(value);
+            return convertToInteger(value, defaultValue);
         } catch (NumberFormatException e) {
-            return 0;
+            return defaultValue;
         }
     }
 
@@ -83,6 +105,13 @@ public class NumberConvertUtil {
      * @throws NumberFormatException 值无法转换
      */
     public static Double convertToDouble(Object value) throws NumberFormatException {
+        return convertToDouble(value, 0.0D);
+    }
+
+    public static Double convertToDouble(Object value, double defaultValue) throws NumberFormatException {
+        if (null == value) {
+            return defaultValue;
+        }
 
         if (value instanceof Number number) {
             return number.doubleValue();
@@ -100,10 +129,14 @@ public class NumberConvertUtil {
      * @return {@link Double}类型的值
      */
     public static Double convertToDoubleSafe(Object value) {
+        return convertToDoubleSafe(value, 0.0D);
+    }
+
+    public static Double convertToDoubleSafe(Object value, double defaultValue) {
         try {
-            return convertToDouble(value);
+            return convertToDouble(value, defaultValue);
         } catch (NumberFormatException e) {
-            return 0.0;
+            return defaultValue;
         }
     }
 
@@ -116,6 +149,13 @@ public class NumberConvertUtil {
      * @throws NumberFormatException 值无法转换
      */
     public static Float convertToFloat(Object value) throws NumberFormatException {
+        return convertToFloat(value, 0);
+    }
+
+    public static Float convertToFloat(Object value, float defaultValue) throws NumberFormatException {
+        if (null == value) {
+            return defaultValue;
+        }
 
         if (value instanceof Number number) {
             return number.floatValue();
@@ -133,10 +173,14 @@ public class NumberConvertUtil {
      * @return {@link Float}类型的值
      */
     public static Float convertToFloatSafe(Object value) {
+        return convertToFloatSafe(value, 0.0F);
+    }
+
+    public static Float convertToFloatSafe(Object value, float defaultValue) {
         try {
-            return convertToFloat(value);
+            return convertToFloat(value, defaultValue);
         } catch (NumberFormatException e) {
-            return 0.0F;
+            return defaultValue;
         }
     }
 
