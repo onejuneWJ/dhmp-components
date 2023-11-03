@@ -1,12 +1,8 @@
 package com.zznode.dhmp.core.exception;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.io.UnsupportedEncodingException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -19,8 +15,6 @@ import java.util.Map;
  * @date create in 2023/6/28 11:01
  */
 public class CommonException extends RuntimeException {
-
-    private final Log logger = LogFactory.getLog(CommonException.class);
 
     private final transient Object[] parameters;
 
@@ -62,10 +56,7 @@ public class CommonException extends RuntimeException {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         PrintStream ps = null;
         try {
-            ps = new PrintStream(baos, false, StandardCharsets.UTF_8.name());
-        } catch (UnsupportedEncodingException e) {
-            logger.error("Error get trace, unsupported encoding.", e);
-            return null;
+            ps = new PrintStream(baos, false, StandardCharsets.UTF_8);
         } finally {
             if (ps != null) {
                 ps.close();

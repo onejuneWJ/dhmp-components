@@ -21,8 +21,10 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.method.HandlerMethod;
+import org.springframework.web.multipart.MultipartException;
 
 import java.sql.SQLException;
+import java.util.Optional;
 
 /**
  * 全局异常处理器
@@ -43,6 +45,23 @@ public class GlobalExceptionHandler implements MessageSourceAware {
             logger.warn(exceptionMessage("Common exception", request, method), exception);
         }
         ExceptionResponse er = new ExceptionResponse(translateMessage(exception.getCode(), exception.getParameters()));
+        setDevException(er, exception);
+        return ResponseEntity.ok(er);
+    }
+
+    /**
+     * 拦截处理 Valid 异常
+     *
+     * @param exception 异常
+     * @return ExceptionResponse
+     */
+    @ExceptionHandler(MultipartException.class)
+    public ResponseEntity<ExceptionResponse> process(HttpServletRequest request,  MultipartException exception) {
+        if (logger.isInfoEnabled()) {
+            logger.info(exceptionMessage("Multipart exception", request, null), exception);
+        }
+        String defaultMessage = exception.getMessage();
+        ExceptionResponse er = new ExceptionResponse(defaultMessage);
         setDevException(er, exception);
         return ResponseEntity.ok(er);
     }
@@ -164,7 +183,10 @@ public class GlobalExceptionHandler implements MessageSourceAware {
     }
 
     private String exceptionMessage(String message, HttpServletRequest request, HandlerMethod method) {
-        return String.format(message + ", Request: {URI=%s, method=%s}", request.getRequestURI(), method.toString());
+        return String.format(message + ", Request: {URI=%s, method=%s}",
+                request.getRequestURI(),
+                Optional.ofNullable(method).map(HandlerMethod::toString).orElse("")
+        );
     }
 
     /**
