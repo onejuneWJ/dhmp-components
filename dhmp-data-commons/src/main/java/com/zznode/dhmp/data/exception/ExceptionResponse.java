@@ -2,6 +2,7 @@ package com.zznode.dhmp.data.exception;
 
 import cn.hutool.core.util.ArrayUtil;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonSetter;
 
 import java.util.Arrays;
 
@@ -12,6 +13,12 @@ import java.util.Arrays;
  * @date create in 2023/6/28 10:27
  */
 public class ExceptionResponse {
+
+    public static final String FAILED_FAILED = "failed";
+    public static final String FAILED_MESSAGE = "message";
+    public static final String FAILED_EXCEPTION = "trace";
+    public static final String FAILED_THROWABLE = "throwable";
+
     private Boolean failed;
     private String message;
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -62,12 +69,22 @@ public class ExceptionResponse {
         return trace;
     }
 
+    @JsonSetter
+    public void setTrace(String[] trace) {
+        this.trace = trace;
+    }
+
     public void setTrace(StackTraceElement[] trace) {
         this.trace = Arrays.stream(trace).map(StackTraceElement::toString).toArray(String[]::new);
     }
 
     public String[] getThrowable() {
         return throwable;
+    }
+
+    @JsonSetter
+    public void setThrowable(String[] throwable) {
+        this.throwable = throwable;
     }
 
     public void setThrowable(String message, StackTraceElement[] trace) {

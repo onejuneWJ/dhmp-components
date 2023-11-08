@@ -26,6 +26,8 @@ import org.springframework.web.multipart.MultipartException;
 import java.sql.SQLException;
 import java.util.Optional;
 
+import static com.zznode.dhmp.data.constant.CustomHeaders.HAS_ERROR;
+
 /**
  * 全局异常处理器
  *
@@ -46,7 +48,7 @@ public class GlobalExceptionHandler implements MessageSourceAware {
         }
         ExceptionResponse er = new ExceptionResponse(translateMessage(exception.getCode(), exception.getParameters()));
         setDevException(er, exception);
-        return ResponseEntity.ok(er);
+        return errorResponse(er);
     }
 
     /**
@@ -63,7 +65,7 @@ public class GlobalExceptionHandler implements MessageSourceAware {
         String defaultMessage = exception.getMessage();
         ExceptionResponse er = new ExceptionResponse(defaultMessage);
         setDevException(er, exception);
-        return ResponseEntity.ok(er);
+        return errorResponse(er);
     }
 
     /**
@@ -80,7 +82,7 @@ public class GlobalExceptionHandler implements MessageSourceAware {
         String defaultMessage = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
         ExceptionResponse er = new ExceptionResponse(defaultMessage);
         setDevException(er, exception);
-        return ResponseEntity.ok(er);
+        return errorResponse(er);
     }
 
 
@@ -98,7 +100,7 @@ public class GlobalExceptionHandler implements MessageSourceAware {
         }
         ExceptionResponse er = new ExceptionResponse(translateMessage("error.db.duplicateKey"));
         setDevException(er, exception);
-        return ResponseEntity.ok(er);
+        return errorResponse(er);
     }
 
     /**
@@ -115,7 +117,7 @@ public class GlobalExceptionHandler implements MessageSourceAware {
         }
         ExceptionResponse er = new ExceptionResponse(translateMessage("error.db.badSql"));
         setDevException(er, exception);
-        return ResponseEntity.ok(er);
+        return errorResponse(er);
     }
 
     /**
@@ -131,7 +133,7 @@ public class GlobalExceptionHandler implements MessageSourceAware {
         }
         ExceptionResponse er = new ExceptionResponse(translateMessage(BaseConstants.ErrorCode.DATA_INVALID));
         setDevException(er, exception);
-        return ResponseEntity.ok(er);
+        return errorResponse(er);
     }
 
     /**
@@ -147,7 +149,7 @@ public class GlobalExceptionHandler implements MessageSourceAware {
         }
         ExceptionResponse er = new ExceptionResponse(translateMessage(BaseConstants.ErrorCode.OPTIMISTIC_LOCK));
         setDevException(er, exception);
-        return ResponseEntity.ok(er);
+        return errorResponse(er);
     }
 
     /**
@@ -163,7 +165,7 @@ public class GlobalExceptionHandler implements MessageSourceAware {
         }
         ExceptionResponse er = new ExceptionResponse(translateMessage(BaseConstants.ErrorCode.ERROR));
         setDevException(er, exception);
-        return ResponseEntity.ok(er);
+        return errorResponse(er);
     }
 
     /**
@@ -179,7 +181,7 @@ public class GlobalExceptionHandler implements MessageSourceAware {
         }
         ExceptionResponse er = new ExceptionResponse(translateMessage(BaseConstants.ErrorCode.ERROR_SQL_EXCEPTION));
         setDevException(er, exception);
-        return ResponseEntity.ok(er);
+        return errorResponse(er);
     }
 
     private String exceptionMessage(String message, HttpServletRequest request, HandlerMethod method) {
@@ -189,6 +191,10 @@ public class GlobalExceptionHandler implements MessageSourceAware {
         );
     }
 
+    public ResponseEntity<ExceptionResponse> errorResponse(ExceptionResponse er){
+       return ResponseEntity.ok().headers(httpHeaders -> httpHeaders.set(HAS_ERROR, "1")).body(er);
+    }
+    
     /**
      * 设置异常信息，方便在前端查看异常信息
      *
