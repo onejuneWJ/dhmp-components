@@ -1,14 +1,20 @@
 package com.zznode.dhmp.file.orm;
 
+import com.zznode.dhmp.core.constant.BaseConstants;
+import com.zznode.dhmp.core.exception.CommonException;
+import com.zznode.dhmp.data.exception.ExceptionResponse;
 import com.zznode.dhmp.file.FileInfo;
-import com.zznode.dhmp.file.orm.FileInfoManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.util.Assert;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestClientResponseException;
 import org.springframework.web.client.RestTemplate;
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Optional;
 
 /**
  * 远程调用实现
@@ -17,6 +23,7 @@ import java.util.Map;
  */
 public class RemoteFileInfoManager implements FileInfoManager {
 
+    private static final Logger logger = LoggerFactory.getLogger(RemoteFileInfoManager.class);
     private final RestTemplate restTemplate;
 
     private final URI fileServiceUrl;
@@ -33,19 +40,39 @@ public class RemoteFileInfoManager implements FileInfoManager {
 
     @Override
     public FileInfo saveFileInfo(FileInfo fileInfo) throws RestClientException {
-        return this.restTemplate.postForObject(fileServiceUrl, fileInfo, FileInfo.class);
+        RequestEntity<FileInfo> requestEntity = RequestEntity.post(fileServiceUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(fileInfo);
+
+        try {
+            return this.restTemplate.exchange(requestEntity, FileInfo.class).getBody();
+        } catch (RestClientException e) {
+            if(e instanceof RestClientResponseException responseException){
+                ExceptionResponse exceptionResponse = responseException.getResponseBodyAs(ExceptionResponse.class);
+                throw new CommonException(Optional.ofNullable(exceptionResponse).map(ExceptionResponse::getMessage).orElse(BaseConstants.ErrorCode.ERROR), e);
+            }
+            throw e;
+        }
+
     }
 
     @Override
     public FileInfo getFileInfo(String uid) throws RestClientException {
-        Map<String, Object> variables = new HashMap<>(1);
-        variables.put("uid", uid);
-        return this.restTemplate.getForObject(this.fileServiceUrl.toString(), FileInfo.class, variables);
+        RequestEntity<Void> requestEntity = RequestEntity.get(createUrlTemplate(), uid).build();
+        try {
+            return this.restTemplate.exchange(requestEntity, FileInfo.class).getBody();
+        } catch (RestClientException e) {
+            if(e instanceof RestClientResponseException responseException){
+                ExceptionResponse exceptionResponse = responseException.getResponseBodyAs(ExceptionResponse.class);
+                logger.error("error response message: {}", Optional.ofNullable(exceptionResponse).map(ExceptionResponse::getMessage).orElse(""));
+                return null;
+            }
+            throw e;
+        }
     }
 
-    @Override
-    public FileInfo getFileInfo(Long id) {
-        URI uri = this.fileServiceUrl.resolve(String.valueOf(id));
-        return this.restTemplate.getForObject(uri, FileInfo.class);
+    private String createUrlTemplate() {
+        String path = this.fileServiceUrl.getPath();
+        return this.fileServiceUrl + (path.endsWith("/") ? "{id}" : "/{id}");
     }
 }

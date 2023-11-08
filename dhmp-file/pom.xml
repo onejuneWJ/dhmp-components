@@ -33,6 +33,10 @@
             <artifactId>dhmp-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.zznode.dhmp</groupId>
+            <artifactId>dhmp-data-commons</artifactId>
+        </dependency>
+        <dependency>
             <groupId>org.apache.tomcat.embed</groupId>
             <artifactId>tomcat-embed-core</artifactId>
             <scope>provided</scope>

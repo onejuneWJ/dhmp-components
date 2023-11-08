@@ -13,5 +13,4 @@ public interface FileInfoManager {
 
     FileInfo getFileInfo(String uid);
 
-    FileInfo getFileInfo(Long id);
 }
