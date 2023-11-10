@@ -33,6 +33,10 @@
             <artifactId>dhmp-web</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webflux</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.zznode.dhmp</groupId>
             <artifactId>dhmp-data-commons</artifactId>
         </dependency>
