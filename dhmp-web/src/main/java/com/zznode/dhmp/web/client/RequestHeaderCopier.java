@@ -21,7 +21,7 @@ public class RequestHeaderCopier {
      *
      * @param headerConsumer 请求头消费
      */
-    public void copyHeaders(BiConsumer<String, String> headerConsumer) {
+    public static void copyHeaders(BiConsumer<String, String> headerConsumer) {
         copyHeaders(headerConsumer, ACCEPT_ALL);
     }
 
@@ -30,7 +30,7 @@ public class RequestHeaderCopier {
      * @param headerConsumer 请求头消费
      * @param namePredicate 用于跳过指定的请求头
      */
-    public void copyHeaders(BiConsumer<String, String> headerConsumer, Predicate<String> namePredicate) {
+    public static void copyHeaders(BiConsumer<String, String> headerConsumer, Predicate<String> namePredicate) {
         Assert.notNull(headerConsumer, "param headerConsumer cannot be null");
         Assert.notNull(namePredicate, "param namePredicate cannot be null");
         /*
