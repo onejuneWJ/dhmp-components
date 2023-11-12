@@ -1,11 +1,11 @@
 package com.zznode.dhmp.file;
 
-import com.zznode.dhmp.file.exception.FileIOException;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 
 /**
  * 文件操作
@@ -33,18 +33,16 @@ public interface FileClient {
      * @param inputStream 输入流
      * @param randomName  是否随机文件名称
      * @return 文件信息对象
-     * @throws IOException 异常
      */
-    FileInfo saveFile(String bucket, String objectName, InputStream inputStream, boolean randomName) throws IOException;
+    FileInfo saveFile(String bucket, String objectName, InputStream inputStream, boolean randomName);
 
     /**
-     * 根据文件对象获取文件信息
+     * 根据文件对象id获取文件信息
      *
      * @param uid 文件对象uid
-     * @return FileResponse包装
-     * @see FileResponse
+     * @return 输入流
      */
-    FileResponse getFile(String uid);
+    InputStream getFile(String uid);
 
     /**
      * 获取文件输入流
@@ -52,28 +50,27 @@ public interface FileClient {
      * @param bucket     桶名
      * @param objectName 文件对象名
      * @return 输入流
-     * @throws IOException 文件不存在
      */
-    InputStream getFile(String bucket, String objectName) throws IOException;
+    InputStream getFile(String bucket, String objectName);
 
     /**
-     * 下载文件到输出流
+     * 根据文件对象id获取文件信息
      *
-     * @param bucket       桶名
-     * @param objectName   文件对象名
-     * @param outputStream 输出流
-     * @throws FileIOException 抛出异常
+     * @param uid 文件对象uid
+     * @return FileInfo/null
      */
-    void download(String bucket, String objectName, OutputStream outputStream) throws FileIOException;
+    @Nullable
+    FileInfo getFileInfo(String uid);
 
     /**
-     * 下载文件到输出流
+     * 获取文件信息
      *
-     * @param uid          文件对象uid
-     * @param outputStream 输出流
-     * @throws FileIOException 抛出异常
+     * @param bucket     桶名
+     * @param objectName 文件对象名
+     * @return FileInfo/null
      */
-    void download(String uid, OutputStream outputStream) throws FileIOException;
+    @Nullable
+    FileInfo getFileInfo(String bucket, String objectName);
 
     /**
      * 下载文件到http响应
@@ -82,7 +79,7 @@ public interface FileClient {
      * @param objectName 文件对象名称
      * @param response   响应
      */
-    void download(String bucket, String objectName, HttpServletResponse response);
+    void download(String bucket, String objectName, HttpServletResponse response, @Nullable String filename);
 
     /**
      * 下载文件到http响应
@@ -90,5 +87,5 @@ public interface FileClient {
      * @param uid      文件对象uid
      * @param response 响应
      */
-    void download(String uid, HttpServletResponse response);
+    void download(String uid, HttpServletResponse response, @NonNull String filename);
 }
