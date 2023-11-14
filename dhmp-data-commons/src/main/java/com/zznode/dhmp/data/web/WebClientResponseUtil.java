@@ -63,9 +63,12 @@ public class WebClientResponseUtil {
         }
     }
 
-    public static Throwable mapErr(WebClientResponseException e) {
-        ExceptionResponse exceptionResponse = e.getResponseBodyAs(ExceptionResponse.class);
-        return new CommonException(exceptionResponse != null ? exceptionResponse.getMessage() : BaseConstants.ErrorCode.ERROR);
+    public static Throwable mapErr(Throwable e) {
+        if (e instanceof WebClientResponseException webClientResponseException) {
+            ExceptionResponse exceptionResponse = webClientResponseException.getResponseBodyAs(ExceptionResponse.class);
+            return new CommonException(exceptionResponse != null ? exceptionResponse.getMessage() : BaseConstants.ErrorCode.ERROR);
+        }
+        return e;
     }
 
     private static boolean isSuccess(ClientResponse clientResponse) {
