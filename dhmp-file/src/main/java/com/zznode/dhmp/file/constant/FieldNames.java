@@ -7,4 +7,6 @@ public interface FieldNames {
     String OBJECT_NAME = "objectName";
 
     String FILE = "file";
+
+    String RANDOM_NAME = "randomName";
 }
