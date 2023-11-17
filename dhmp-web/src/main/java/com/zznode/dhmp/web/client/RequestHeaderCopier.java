@@ -5,7 +5,9 @@ import org.springframework.util.Assert;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import java.net.http.HttpRequest;
 import java.util.Enumeration;
+import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.Predicate;
 
@@ -16,12 +18,27 @@ import java.util.function.Predicate;
  * @date create in 2023/8/24
  */
 public class RequestHeaderCopier {
+
+    /**
+     *  webclient如果使用的jdk自带的JdkClientHttpConnector，会过滤如下的请求头，将抛出异常
+     * @see HttpRequest.Builder#header(String, String)
+     */
+    private static final Set<String> NOT_ALLOW_HEADERS = Set.of("connection", "content-length", "expect", "host", "upgrade");
+
     /**
      * 复制请求头
      *
      * @param headerConsumer 请求头消费
      */
     public static void copyHeaders(BiConsumer<String, String> headerConsumer) {
+        copyHeaders(headerConsumer, s -> !NOT_ALLOW_HEADERS.contains(s));
+    }
+    /**
+     * 复制请求头
+     *
+     * @param headerConsumer 请求头消费
+     */
+    public static void copyAllHeaders(BiConsumer<String, String> headerConsumer) {
         copyHeaders(headerConsumer, ACCEPT_ALL);
     }
 
