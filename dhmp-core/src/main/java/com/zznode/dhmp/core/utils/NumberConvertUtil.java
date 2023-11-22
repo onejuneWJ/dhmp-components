@@ -1,5 +1,8 @@
 package com.zznode.dhmp.core.utils;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 /**
  * 数字强转工具
  * <p>通常是从json或者数据库中拿到的值,需要转换成具体的类型使用
@@ -8,6 +11,8 @@ package com.zznode.dhmp.core.utils;
  * @date create in 2023/8/4
  */
 public class NumberConvertUtil {
+
+    private static final Logger logger = LoggerFactory.getLogger(NumberConvertUtil.class);
 
     /**
      * 将已知数字类型但是被声明为{@link Object}类型转换成{@link Long}类型
@@ -48,6 +53,7 @@ public class NumberConvertUtil {
         try {
             return convertToLong(value, defaultValue);
         } catch (NumberFormatException e) {
+            logger.warn("Error converting value to Long, fallback to default value {}", defaultValue);
             return defaultValue;
         }
     }
@@ -92,6 +98,7 @@ public class NumberConvertUtil {
         try {
             return convertToInteger(value, defaultValue);
         } catch (NumberFormatException e) {
+            logger.warn("Error converting value to Integer, fallback to default value {}", defaultValue);
             return defaultValue;
         }
     }
@@ -136,6 +143,7 @@ public class NumberConvertUtil {
         try {
             return convertToDouble(value, defaultValue);
         } catch (NumberFormatException e) {
+            logger.warn("Error converting value to Double, fallback to default value {}", defaultValue);
             return defaultValue;
         }
     }
@@ -180,6 +188,7 @@ public class NumberConvertUtil {
         try {
             return convertToFloat(value, defaultValue);
         } catch (NumberFormatException e) {
+            logger.warn("Error converting value to Float, fallback to default value {}", defaultValue);
             return defaultValue;
         }
     }
