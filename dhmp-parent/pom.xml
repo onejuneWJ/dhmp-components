@@ -14,8 +14,8 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <dhmp-spring-boot.version>1.0-SNAPSHOT</dhmp-spring-boot.version>
-        <spring-framework.version>6.0.12</spring-framework.version>
-        <spring-boot.version>3.1.4</spring-boot.version>
+        <spring-framework.version>6.1.1</spring-framework.version>
+        <spring-boot.version>3.2.0</spring-boot.version>
         <spring-cloud.version>2022.0.1</spring-cloud.version>
         <spring-cloud-alibaba.version>2022.0.0.0-RC2</spring-cloud-alibaba.version>
         <hutool.version>5.8.22</hutool.version>

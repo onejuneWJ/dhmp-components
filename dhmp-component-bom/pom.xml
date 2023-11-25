@@ -12,8 +12,6 @@
     <description>dhmp components</description>
     <url>https://gitlab.zznode.com/jun.wang7142/dhmp-components</url>
     <properties>
-        <maven.compiler.source>17</maven.compiler.source>
-        <maven.compiler.target>17</maven.compiler.target>
         <dhmp-components.version>1.0-SNAPSHOT</dhmp-components.version>
     </properties>
 
@@ -58,6 +56,11 @@
             <dependency>
                 <groupId>com.zznode.dhmp</groupId>
                 <artifactId>dhmp-lov</artifactId>
+                <version>${dhmp-components.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zznode.dhmp</groupId>
+                <artifactId>dhmp-lov-support</artifactId>
                 <version>${dhmp-components.version}</version>
             </dependency>
             <dependency>
