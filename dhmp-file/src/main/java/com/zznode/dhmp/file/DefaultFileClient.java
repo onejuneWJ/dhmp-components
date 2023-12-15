@@ -2,9 +2,11 @@ package com.zznode.dhmp.file;
 
 import cn.hutool.core.io.IORuntimeException;
 import com.zznode.dhmp.core.exception.CommonException;
+import com.zznode.dhmp.core.message.DhmpMessageSource;
 import com.zznode.dhmp.data.web.WebClientResponseUtil;
 import com.zznode.dhmp.file.constant.FieldNames;
 import com.zznode.dhmp.file.constant.FileErrorCode;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
@@ -24,7 +26,7 @@ import java.io.InputStream;
  *
  * @author 王俊
  */
-public class DefaultFileClient implements FileClient {
+public class DefaultFileClient implements FileClient, InitializingBean {
 
     /**
      * 文件服务地址
@@ -200,5 +202,8 @@ public class DefaultFileClient implements FileClient {
                 .subscribe();
     }
 
-
+    @Override
+    public void afterPropertiesSet() {
+        DhmpMessageSource.addBasename("messages.messages-file");
+    }
 }
