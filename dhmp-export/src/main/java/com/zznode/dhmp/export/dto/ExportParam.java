@@ -3,7 +3,9 @@ package com.zznode.dhmp.export.dto;
 import com.zznode.dhmp.export.constants.ReportType;
 import com.zznode.dhmp.export.constants.RequestType;
 import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -54,7 +56,7 @@ public class ExportParam {
 
         Assert.notNull(requestType, "requestType must not be null");
         Assert.notNull(type, "type must not be null");
-        Assert.notNull(ids, "ids must not be null");
+        Assert.isTrue(Objects.nonNull(ids) || StringUtils.hasText(columns), "ids must not be null");
     }
 
     public RequestType getRequestType() {
