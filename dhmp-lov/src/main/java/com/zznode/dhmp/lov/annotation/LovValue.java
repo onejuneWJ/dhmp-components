@@ -1,12 +1,11 @@
 package com.zznode.dhmp.lov.annotation;
 
-import org.springframework.core.annotation.AliasFor;
-
 import java.lang.annotation.*;
 
 /**
  * 值集翻译字段
  *
+ * <p>需要mybatis增强组件支持
  * @author 王俊
  * @date create in 2023/8/31
  */
@@ -15,14 +14,13 @@ import java.lang.annotation.*;
 @Documented
 public @interface LovValue {
 
-    @AliasFor(attribute = "lovCode")
+    /**
+     * LOV编码
+     */
     String value();
 
-    @AliasFor(attribute = "value")
-    String lovCode() default "";
-
     /**
-     * 翻译值赋给字段
+     * 翻译值赋给字段,如果不填,则不会进行翻译
      */
     String titleField() default "";
 }

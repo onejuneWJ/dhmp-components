@@ -43,12 +43,15 @@ public class DefaultLovClient implements LovClient {
 
     @Override
     public String translate(String code, String value) {
+        logger.trace("starting translate lov code: {} of value: {}", code, value);
         Map<String, String> map = lovCache.getLovValueCache(specifyCacheKey(code), () -> getFromDb(code));
         if (map == null || map.isEmpty()) {
             logger.error("cannot translate. cannot find lov of code: " + code);
             return null;
         }
-        return map.get(value);
+        String translated = map.get(value);
+        logger.trace("completed translate value: {}", translated);
+        return translated;
     }
 
     private String specifyCacheKey(String code) {
