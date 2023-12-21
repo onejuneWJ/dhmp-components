@@ -20,7 +20,7 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <pagehelper.version>5.3.3</pagehelper.version>
+        <pagehelper.version>6.1.0</pagehelper.version>
     </properties>
     <dependencies>
         <dependency>

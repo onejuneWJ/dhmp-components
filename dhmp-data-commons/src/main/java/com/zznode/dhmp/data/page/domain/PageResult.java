@@ -13,12 +13,22 @@ import java.util.List;
  */
 public class PageResult<T> implements Serializable {
 
+    /**
+     * 总条数
+     */
     private Long total;
-    private List<T> data;
+    /**
+     * 当前页数据
+     */
+    private List<T> rows;
 
-    public PageResult(Long total, List<T> data) {
+    public PageResult(Long total, List<T> rows) {
         this.total = total;
-        this.data = data;
+        this.rows = rows;
+    }
+
+    public static <T> PageResult<T> of(Long total, List<T> rows) {
+        return new PageResult<>(total, rows);
     }
 
     public static <T> PageResult<T> of(PageInfo<T> pageInfo) {
@@ -37,13 +47,19 @@ public class PageResult<T> implements Serializable {
         this.total = total;
     }
 
-    public List<T> getData() {
-        return data;
+    public List<T> getRows() {
+        return rows;
     }
 
-    public void setData(List<T> data) {
-        this.data = data;
+    public void setRows(List<T> rows) {
+        this.rows = rows;
     }
 
-
+    @Override
+    public String toString() {
+        return "PageResult{" +
+                "total=" + total +
+                ", rows=" + rows +
+                '}';
+    }
 }
