@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.zznode.dhmp.lov.constant.LovConstants.LOV_CACHE_NAME;
+
 /**
  * LovClient默认实现
  *
@@ -25,7 +27,10 @@ public class DefaultLovClient implements LovClient {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
-    private LovCache lovCache = new LovCache(new ConcurrentMapCache("lovCache"));
+    /**
+     * 默认使用ConcurrentMapCache
+     */
+    private LovCache lovCache = new LovCache(new ConcurrentMapCache(LOV_CACHE_NAME));
 
     private LovManager lovManager;
 

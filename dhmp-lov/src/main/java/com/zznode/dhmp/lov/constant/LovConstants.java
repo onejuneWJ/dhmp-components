@@ -8,5 +8,7 @@ package com.zznode.dhmp.lov.constant;
  */
 public interface LovConstants {
 
+    String LOV_CACHE_NAME = "lovCache";
+
     String LOV_CACHE_KEY = "DHMP:LOV";
 }
