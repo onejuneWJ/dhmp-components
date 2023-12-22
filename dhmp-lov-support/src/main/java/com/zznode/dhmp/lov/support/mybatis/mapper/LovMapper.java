@@ -2,6 +2,7 @@ package com.zznode.dhmp.lov.support.mybatis.mapper;
 
 import com.zznode.dhmp.lov.domain.LovValue;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.ResultType;
 import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public interface LovMapper {
      * @return 值集值列表
      */
     @Select("select * from " + LovValue.LOV_VALUE_TABLE_NAME + " where lov_code = #{lovCode}")
+    @ResultType(LovValue.class)
     List<LovValue> selectLovValueList(@Param("lovCode") String lovCode);
 
 }

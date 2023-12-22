@@ -56,7 +56,7 @@ public class ExportParam {
 
         Assert.notNull(requestType, "requestType must not be null");
         Assert.notNull(type, "type must not be null");
-        Assert.isTrue(Objects.nonNull(ids) || StringUtils.hasText(columns), "ids must not be null");
+        Assert.isTrue(Objects.nonNull(ids) || StringUtils.hasText(columns), "export columns must not be null");
     }
 
     public RequestType getRequestType() {

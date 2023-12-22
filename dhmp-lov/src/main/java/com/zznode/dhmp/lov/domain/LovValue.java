@@ -8,7 +8,7 @@ package com.zznode.dhmp.lov.domain;
  */
 public class LovValue {
 
-    public static final String LOV_VALUE_TABLE_NAME = "dhmp_common.common_lov_value";
+    public static final String LOV_VALUE_TABLE_NAME = "common_lov_value";
 
     private Long id;
     /**
