@@ -8,7 +8,6 @@
 * dhmp-jdbc
 * dhmp-mybatis-plus
 * dhmp-lov
-* dhmp-lov-support (待优化，设计不合理)
 * dhmp-web
 * dhmp-schedule
 * dhmp-file (文件客户端组件)
