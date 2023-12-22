@@ -2,6 +2,7 @@ package com.zznode.dhmp.mybatis.flex.listener.set;
 
 import cn.hutool.core.util.ReflectUtil;
 import com.mybatisflex.annotation.SetListener;
+import com.mybatisflex.core.mybatis.MappedStatementTypes;
 import com.mybatisflex.core.util.Reflectors;
 import com.zznode.dhmp.lov.annotation.LovValue;
 import com.zznode.dhmp.lov.client.LovClient;
@@ -59,7 +60,20 @@ public class LovSetListener implements SupportedListener, SetListener {
                 return value;
             }
             // 翻译
-            String translate = lovClient.translate(annotation.value(), String.valueOf(value));
+            String translate;
+
+            Class<?> currentType = MappedStatementTypes.getCurrentType();
+            try {
+                // fix.
+                // 当前代码处于查询后设置结果值的阶段,MappedStatementTypes储存的类型是查询结果返回的类型。
+                // 下面值集翻译可能会再次执行mybatis的查询,在FlexConfiguration#getMappedStatement(String id)方法中会获取到currentType结果类型
+                // 这会导致lov查询返回值的类型报错。 所以在执行lov翻译阶段暂时先clear一下
+                MappedStatementTypes.clear();
+                // 翻译
+                translate = lovClient.translate(annotation.value(), String.valueOf(value));
+            } finally {
+                MappedStatementTypes.setCurrentType(currentType);
+            }
             try {
                 reflector.getSetInvoker(targetField).invoke(entity, new String[]{translate});
             } catch (IllegalAccessException | InvocationTargetException e) {
