@@ -31,16 +31,17 @@ public class MybatisLovManager implements LovManager, InitializingBean {
 
     @Override
     public List<LovValue> getLovValues(String lovCode) {
-        return getLovMapper().selectLovValueList(lovCode);
+        try (SqlSession sqlSession = sqlSessionFactory.openSession()) {
+            LovMapper lovMapper = sqlSession.getMapper(LovMapper.class);
+            return lovMapper.selectLovValueList(lovCode);
+        }
     }
 
-    LovMapper getLovMapper() {
-        SqlSession sqlSession = sqlSessionFactory.openSession();
-        return sqlSession.getMapper(LovMapper.class);
-    }
 
     @Override
     public void afterPropertiesSet() {
-        sqlSessionFactory.getConfiguration().addMapper(LovMapper.class);
+        if (!sqlSessionFactory.getConfiguration().hasMapper(LovManager.class)) {
+            sqlSessionFactory.getConfiguration().addMapper(LovMapper.class);
+        }
     }
 }

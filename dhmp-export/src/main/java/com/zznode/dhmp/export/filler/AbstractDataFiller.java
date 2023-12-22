@@ -27,7 +27,8 @@ public abstract class AbstractDataFiller implements DataFiller {
 
     public AbstractDataFiller(ExportContext exportContext) {
         this.exportHelper = exportContext.exportHelper();
-        this.columnList = exportHelper.getCheckedExportColumn(exportContext.exportClass(),exportContext.exportParam().getIds());
+        this.columnList = exportHelper.getExportColumns(exportContext);
+        Assert.isTrue(!columnList.isEmpty(), "columnList is empty");
     }
 
     public Integer getSingleExcelMaxRow() {

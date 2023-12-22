@@ -80,4 +80,18 @@ public interface FileClient {
     @Nullable
     FileInfo getFileInfo(String uid);
 
+    /**
+     * 删除文件
+     *
+     * @param uid 文件uid
+     */
+    void remove(String uid);
+
+    /**
+     * 删除文件
+     *
+     * @param bucket     桶名
+     * @param objectName 文件对象名
+     */
+    void remove(String bucket, String objectName);
 }

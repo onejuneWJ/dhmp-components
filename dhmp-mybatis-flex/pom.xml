@@ -3,13 +3,14 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>dhmp-parent</artifactId>
         <groupId>com.zznode.dhmp</groupId>
+        <artifactId>dhmp-parent</artifactId>
         <version>1.0-SNAPSHOT</version>
     </parent>
+
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>dhmp-mybatis-plus</artifactId>
+    <artifactId>dhmp-mybatis-flex</artifactId>
 
     <developers>
         <developer>
@@ -20,23 +21,35 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <mybatis-plus.version>3.5.4.1</mybatis-plus.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
+
     <dependencies>
         <dependency>
-            <groupId>com.zznode.dhmp</groupId>
-            <artifactId>dhmp-jdbc</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.baomidou</groupId>
-            <artifactId>mybatis-plus</artifactId>
-            <version>${mybatis-plus.version}</version>
-            <scope>compile</scope>
+            <groupId>com.mybatis-flex</groupId>
+            <artifactId>mybatis-flex-spring</artifactId>
+            <version>1.7.5</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.mybatis</groupId>
+                    <artifactId>mybatis-spring</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis-spring</artifactId>
             <version>3.0.3</version>
         </dependency>
+        <dependency>
+            <groupId>com.zznode.dhmp</groupId>
+            <artifactId>dhmp-lov</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zznode.dhmp.security</groupId>
+            <artifactId>dhmp-security-core</artifactId>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
+
 </project>

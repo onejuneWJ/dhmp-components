@@ -11,15 +11,17 @@ import org.springframework.util.Assert;
 import java.util.Map;
 import java.util.concurrent.Callable;
 
+import static com.zznode.dhmp.lov.constant.LovConstants.LOV_CACHE_NAME;
+
 /**
  * 值集缓存
+ * <p>建议使用ConcurrentMapCache。
+ * <p>经过测试，在查询几万条数据时,使用redis性能不够好。redis不适合这种场景
  *
  * @author 王俊
  * @date create in 2023/8/31
  */
 public class LovCache implements InitializingBean {
-
-    public static final String LOV_CACHE_NAME = "lovCache";
 
     private static final Logger logger = LoggerFactory.getLogger(LovCache.class);
 

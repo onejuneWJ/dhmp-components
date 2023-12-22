@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static com.zznode.dhmp.lov.constant.LovConstants.LOV_CACHE_NAME;
+
 /**
  * LovClient默认实现
  *
@@ -25,7 +27,10 @@ public class DefaultLovClient implements LovClient {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
 
-    private LovCache lovCache = new LovCache(new ConcurrentMapCache("lovCache"));
+    /**
+     * 默认使用ConcurrentMapCache
+     */
+    private LovCache lovCache = new LovCache(new ConcurrentMapCache(LOV_CACHE_NAME));
 
     private LovManager lovManager;
 
@@ -43,12 +48,15 @@ public class DefaultLovClient implements LovClient {
 
     @Override
     public String translate(String code, String value) {
+        logger.trace("starting translate lov code: {} of value: {}", code, value);
         Map<String, String> map = lovCache.getLovValueCache(specifyCacheKey(code), () -> getFromDb(code));
         if (map == null || map.isEmpty()) {
             logger.error("cannot translate. cannot find lov of code: " + code);
             return null;
         }
-        return map.get(value);
+        String translated = map.get(value);
+        logger.trace("completed translate value: {}", translated);
+        return translated;
     }
 
     private String specifyCacheKey(String code) {

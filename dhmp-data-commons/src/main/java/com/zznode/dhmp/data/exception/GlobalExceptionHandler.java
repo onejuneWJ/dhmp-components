@@ -20,6 +20,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.multipart.MultipartException;
 
@@ -34,7 +35,7 @@ import static com.zznode.dhmp.data.constant.CustomHeaders.HAS_ERROR;
  * @author 王俊
  * @date create in 2023/6/28 10:22
  */
-@ControllerAdvice
+@ControllerAdvice(annotations = {RestController.class})
 public class GlobalExceptionHandler implements MessageSourceAware {
 
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);

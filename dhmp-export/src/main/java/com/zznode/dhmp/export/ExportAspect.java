@@ -17,6 +17,7 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
@@ -33,7 +34,7 @@ import java.time.Duration;
  * @date create in 2023/7/17 14:03
  */
 @Aspect
-public final class ExportAspect implements MessageSourceAware {
+public final class ExportAspect implements MessageSourceAware, InitializingBean {
 
     private final Logger logger = LoggerFactory.getLogger(ExportAspect.class);
 
@@ -136,4 +137,8 @@ public final class ExportAspect implements MessageSourceAware {
         this.messages = new MessageSourceAccessor(messageSource);
     }
 
+    @Override
+    public void afterPropertiesSet() {
+        DhmpMessageSource.addBasename("messages.messages-export");
+    }
 }

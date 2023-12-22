@@ -14,6 +14,7 @@
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
         <dhmp-spring-boot.version>1.0-SNAPSHOT</dhmp-spring-boot.version>
+        <dhmp-security.version>1.0-SNAPSHOT</dhmp-security.version>
         <spring-framework.version>6.1.1</spring-framework.version>
         <spring-boot.version>3.2.0</spring-boot.version>
         <spring-cloud.version>2022.0.1</spring-cloud.version>
@@ -47,6 +48,13 @@
                 <scope>import</scope>
             </dependency>
             <dependency>
+                <groupId>com.zznode.dhmp.security</groupId>
+                <artifactId>dhmp-security-bom</artifactId>
+                <version>${dhmp-security.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
                 <groupId>cn.hutool</groupId>
                 <artifactId>hutool-all</artifactId>
                 <version>${hutool.version}</version>
@@ -74,6 +82,11 @@
             <dependency>
                 <groupId>com.zznode.dhmp</groupId>
                 <artifactId>dhmp-mybatis-plus</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.zznode.dhmp</groupId>
+                <artifactId>dhmp-mybatis-flex</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>

@@ -1,8 +1,9 @@
 package com.zznode.dhmp.data.page.domain;
 
+import com.github.pagehelper.ISelect;
 import com.github.pagehelper.Page;
 import com.github.pagehelper.PageHelper;
-import com.zznode.dhmp.data.page.Select;
+import com.github.pagehelper.PageInfo;
 import com.zznode.dhmp.data.page.parser.DefaultOrderByParser;
 import com.zznode.dhmp.data.page.parser.OrderByParser;
 import org.springframework.data.domain.OffsetScrollPosition;
@@ -19,11 +20,18 @@ import java.util.Optional;
  *
  * @author 王俊
  * @date create in 2023/7/3 10:54
+ * @see PageHelper
  */
 public class PageRequest implements Pageable {
 
     private final Pageable delegate;
     private OrderByParser orderByParser;
+
+    /**
+     * 总数, 可选参数。
+     * <p>前端如果传入参数中包含total,则表明已经查询过总数了,下一次查询其他页的时候不执行count,提高效率。
+     */
+    private long total = 0;
 
     private final static OrderByParser DEFAULT_ORDER_BY_PARSER = new DefaultOrderByParser();
 
@@ -32,6 +40,13 @@ public class PageRequest implements Pageable {
         this.orderByParser = orderByParser;
     }
 
+    public long getTotal() {
+        return total;
+    }
+
+    public void setTotal(long total) {
+        this.total = total;
+    }
 
     @SuppressWarnings("unused")
     private PageRequest() throws IllegalAccessException {
@@ -60,7 +75,10 @@ public class PageRequest implements Pageable {
      * @see PageHelper#startPage(int, int)
      */
     public <E> Page<E> startPage() {
-        return startPageAndSort(Sort.unsorted());
+        Page<E> page = PageHelper.startPage(getPageNumber(), getPageSize());
+        // 如果前端传来的参数包含total,就不用执行count了
+        page.setCount(total <= 0);
+        return page;
     }
 
 
@@ -72,7 +90,12 @@ public class PageRequest implements Pageable {
      * @return 分页信息
      */
     public <E> Page<E> startPageAndSort(Sort defaultSort) {
-        return PageHelper.startPage(getPageNumber(), getPageSize(), getOrderBy(defaultSort));
+        Page<E> page = startPage();
+        Sort sort = getSortOr(defaultSort);
+        if (sort.isSorted()) {
+            page.setOrderBy(orderByParser.parseToOrderBy(sort));
+        }
+        return page;
     }
 
     /**
@@ -82,12 +105,22 @@ public class PageRequest implements Pageable {
      * @param <E>    实体类型
      * @return PageResult
      */
-    public <E> PageResult<E> doPage(Select<E> select) {
-        Page<E> page = startPage();
-        select.doSelect();
-        return PageResult.of(page);
+    public <E> PageResult<E> doPage(ISelect select) {
+        try (Page<E> page = startPage()) {
+            return parseResult(page.doSelectPageInfo(select));
+        }
     }
 
+    /**
+     * 执行分页并排序，返回分页结果
+     *
+     * @param select      查询
+     * @param <E>         实体类型
+     * @return PageResult
+     */
+    public <E> PageResult<E> doPageAndSort(ISelect select) {
+        return doPageAndSort(select, Sort.unsorted());
+    }
 
     /**
      * 执行分页并排序，返回分页结果
@@ -97,10 +130,19 @@ public class PageRequest implements Pageable {
      * @param defaultSort 排序，当{@link #getSort()}获取到的Sort对象中{@link Sort#isUnsorted() isUnsorted}为true时，使用的默认排序
      * @return PageResult
      */
-    public <E> PageResult<E> doPageAndSort(Select<E> select, Sort defaultSort) {
-        Page<E> page = startPageAndSort(defaultSort);
-        select.doSelect();
-        return PageResult.of(page);
+    public <E> PageResult<E> doPageAndSort(ISelect select, Sort defaultSort) {
+        try (Page<E> page = startPageAndSort(defaultSort)) {
+            return parseResult(page.doSelectPageInfo(select));
+        }
+    }
+
+    private <E> PageResult<E> parseResult(PageInfo<E> page) {
+        PageResult<E> result = PageResult.of(page);
+        if (this.total > 0 && page.getTotal() <= 0) {
+
+            result.setTotal(getTotal());
+        }
+        return result;
     }
 
     /**

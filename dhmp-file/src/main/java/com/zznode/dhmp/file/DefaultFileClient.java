@@ -2,9 +2,11 @@ package com.zznode.dhmp.file;
 
 import cn.hutool.core.io.IORuntimeException;
 import com.zznode.dhmp.core.exception.CommonException;
+import com.zznode.dhmp.core.message.DhmpMessageSource;
 import com.zznode.dhmp.data.web.WebClientResponseUtil;
 import com.zznode.dhmp.file.constant.FieldNames;
 import com.zznode.dhmp.file.constant.FileErrorCode;
+import org.springframework.beans.factory.InitializingBean;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpEntity;
@@ -16,7 +18,6 @@ import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -25,7 +26,7 @@ import java.io.InputStream;
  *
  * @author 王俊
  */
-public class DefaultFileClient implements FileClient {
+public class DefaultFileClient implements FileClient, InitializingBean {
 
     /**
      * 文件服务地址
@@ -128,7 +129,7 @@ public class DefaultFileClient implements FileClient {
                 .exchangeToMono(clientResponse -> WebClientResponseUtil.mapToMono(clientResponse, Resource.class))
                 .onErrorMap(WebClientResponseUtil::mapErr)
                 .blockOptional()
-                .orElseThrow(() -> new CommonException(FileErrorCode.FILE_INFO_NOT_FOUND, uid));
+                .orElseThrow(() -> new CommonException(FileErrorCode.FILE_INFO_NOT_FOUND, "uid: " + uid));
         try {
             return resource.getInputStream();
         } catch (IOException e) {
@@ -157,7 +158,7 @@ public class DefaultFileClient implements FileClient {
                 .exchangeToMono(clientResponse -> WebClientResponseUtil.mapToMono(clientResponse, Resource.class))
                 .onErrorMap(WebClientResponseUtil::mapErr)
                 .blockOptional()
-                .orElseThrow(() -> new CommonException(FileErrorCode.FILE_INFO_NOT_FOUND, bucket + File.separator + objectName));
+                .orElseThrow(() -> new CommonException(FileErrorCode.FILE_INFO_NOT_FOUND, "bucket: " + bucket + ", object: " + objectName));
         try {
             return resource.getInputStream();
         } catch (IOException e) {
@@ -174,5 +175,35 @@ public class DefaultFileClient implements FileClient {
                 .block();
     }
 
+    @Override
+    public void remove(String uid) {
+        this.webClient.delete()
+                .uri(this.baseUrl, uriBuilder -> uriBuilder.path("/v1/files/{uid}").build(uid))
+                .exchangeToMono(clientResponse -> WebClientResponseUtil.mapToMono(clientResponse, Object.class))
+                .onErrorMap(WebClientResponseUtil::mapErr)
+                .subscribe();
 
+    }
+
+    @Override
+    public void remove(String bucket, String objectName) {
+
+        MultiValueMap<String, String> params = new LinkedMultiValueMap<>();
+        params.add(FieldNames.BUCKET, bucket);
+        params.add(FieldNames.OBJECT_NAME, objectName);
+        this.webClient.delete()
+                .uri(this.baseUrl, uriBuilder -> uriBuilder
+                        .path("/v1/files")
+                        .queryParams(params)
+                        .build()
+                )
+                .exchangeToMono(clientResponse -> WebClientResponseUtil.mapToMono(clientResponse, Object.class))
+                .onErrorMap(WebClientResponseUtil::mapErr)
+                .subscribe();
+    }
+
+    @Override
+    public void afterPropertiesSet() {
+        DhmpMessageSource.addBasename("messages.messages-file");
+    }
 }
