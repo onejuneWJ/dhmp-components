@@ -1,4 +1,6 @@
-# 通用导出组件
+# DHMP-EXPORT
+
+数据导出组件，使用依赖spring-aop、apache-poi。
 
 ## 使用方式
 
@@ -53,11 +55,11 @@
         }
     }
     ```
-  * 接口方法使用com.zznode.dhmp.export.annotation.Export注解标注,value值为导出的实体类
+  * 接口方法使用com.zznode.dhmp.export.annotation.Export注解标注,value值为导出的实体类。export注解必须标记在controller的方法上。
   * 方法参数必需有一个com.zznode.dhmp.export.ExportContext类型的参数(即使业务上不会使用)
 - 前端请求
   ```text
-  /export-context?requestType=DATA&type=CSV&ids=1,2,3,4,5,6,7
+  /export-context?requestType=DATA&type=CSV&columns=goodsName,priceUnit,createdDate
   ```
   
 
