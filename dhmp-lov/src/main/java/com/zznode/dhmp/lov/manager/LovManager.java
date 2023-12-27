@@ -1,4 +1,4 @@
-package com.zznode.dhmp.lov;
+package com.zznode.dhmp.lov.manager;
 
 import com.zznode.dhmp.lov.domain.LovValue;
 

@@ -12,7 +12,7 @@ import java.util.Set;
  */
 public final class RegisteredBeansRegistry {
 
-    private static transient final Set<String>  REGISTERED_BEANS = new HashSet<>(8);
+    private static final Set<String>  REGISTERED_BEANS = new HashSet<>(8);
 
     public static void add(String beanClassName) {
         REGISTERED_BEANS.add(beanClassName);

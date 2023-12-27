@@ -25,6 +25,12 @@ public class LovValue {
      */
     private String value;
 
+    /**
+     * 如：在前端作为下拉选项是否展示。
+     * 1：是；0：否
+     */
+    private Integer showFlag;
+
     public Long getId() {
         return id;
     }
@@ -55,5 +61,13 @@ public class LovValue {
 
     public void setValue(String value) {
         this.value = value;
+    }
+
+    public Integer getShowFlag() {
+        return showFlag;
+    }
+
+    public void setShowFlag(Integer showFlag) {
+        this.showFlag = showFlag;
     }
 }

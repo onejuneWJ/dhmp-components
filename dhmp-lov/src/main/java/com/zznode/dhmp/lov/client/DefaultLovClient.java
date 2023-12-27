@@ -1,7 +1,6 @@
 package com.zznode.dhmp.lov.client;
 
-import com.zznode.dhmp.lov.LovCache;
-import com.zznode.dhmp.lov.LovManager;
+import com.zznode.dhmp.lov.manager.LovManager;
 import com.zznode.dhmp.lov.constant.LovConstants;
 import com.zznode.dhmp.lov.domain.LovValue;
 import org.slf4j.Logger;

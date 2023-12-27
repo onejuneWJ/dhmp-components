@@ -65,11 +65,6 @@
             </dependency>
             <dependency>
                 <groupId>com.zznode.dhmp</groupId>
-                <artifactId>dhmp-lov-support</artifactId>
-                <version>${dhmp-components.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.zznode.dhmp</groupId>
                 <artifactId>dhmp-schedule</artifactId>
                 <version>${dhmp-components.version}</version>
             </dependency>

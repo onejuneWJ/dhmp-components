@@ -1,9 +1,11 @@
 package com.zznode.dhmp.mybatis.flex.listener.insert;
 
 import com.mybatisflex.annotation.AbstractInsertListener;
+import com.zznode.dhmp.mybatis.flex.annotation.ModifyAudit;
 import com.zznode.dhmp.mybatis.flex.domain.BaseModel;
 import com.zznode.dhmp.security.core.CustomUserDetails;
 import com.zznode.dhmp.security.core.SecurityUtil;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.ClassUtils;
 
 import java.util.Date;
@@ -38,6 +40,10 @@ public class InsertAuditListener extends AbstractInsertListener<BaseModel> {
      */
     @Override
     public void doInsert(BaseModel entity) {
+        ModifyAudit annotation = AnnotationUtils.findAnnotation(entity.getClass(), ModifyAudit.class);
+        if (annotation == null) {
+            return;
+        }
         Long id = DEFAULT_CREATED_BY;
         if (securityPresent) {
             CustomUserDetails customUserDetails = SecurityUtil.getUserDetails();

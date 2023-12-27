@@ -1,4 +1,4 @@
-package com.zznode.dhmp.lov;
+package com.zznode.dhmp.lov.client;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
