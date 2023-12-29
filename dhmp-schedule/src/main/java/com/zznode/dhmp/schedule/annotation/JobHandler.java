@@ -5,7 +5,8 @@ import org.springframework.core.annotation.AliasFor;
 import java.lang.annotation.*;
 
 /**
- * 描述
+ * 标记次注解，将类标记为任务执行类。
+ * <p> 标记的类必须继承{@link com.zznode.dhmp.schedule.handler.AbstractJobHandler}
  * @author 王俊
  */
 @Target({ElementType.TYPE})
@@ -25,7 +26,8 @@ public @interface JobHandler {
     @AliasFor(attribute = "value")
     String code() default "";
 
-    String cron() default "";
-
-
+    /**
+     * 执行器名称
+     */
+    String name() default "";
 }

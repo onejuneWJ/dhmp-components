@@ -25,7 +25,15 @@
     <dependencies>
         <dependency>
             <groupId>com.zznode.dhmp</groupId>
+            <artifactId>dhmp-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zznode.dhmp</groupId>
             <artifactId>dhmp-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.zznode.dhmp</groupId>
+            <artifactId>dhmp-jdbc</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
