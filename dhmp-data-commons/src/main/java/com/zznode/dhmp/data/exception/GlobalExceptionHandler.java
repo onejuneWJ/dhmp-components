@@ -7,9 +7,11 @@ import com.zznode.dhmp.core.message.DhmpMessageSource;
 import jakarta.servlet.http.HttpServletRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.EnvironmentAware;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
 import org.springframework.context.support.MessageSourceAccessor;
+import org.springframework.core.env.Environment;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -36,11 +38,12 @@ import static com.zznode.dhmp.data.constant.CustomHeaders.HAS_ERROR;
  * @date create in 2023/6/28 10:22
  */
 @ControllerAdvice(annotations = {RestController.class})
-public class GlobalExceptionHandler implements MessageSourceAware {
+public class GlobalExceptionHandler implements MessageSourceAware, EnvironmentAware {
 
     private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     MessageSourceAccessor messages = DhmpMessageSource.getAccessor();
 
+    private boolean isDev = false;
 
     @ExceptionHandler(CommonException.class)
     public ResponseEntity<ExceptionResponse> process(HttpServletRequest request, HandlerMethod method, CommonException exception) {
@@ -59,7 +62,7 @@ public class GlobalExceptionHandler implements MessageSourceAware {
      * @return ExceptionResponse
      */
     @ExceptionHandler(MultipartException.class)
-    public ResponseEntity<ExceptionResponse> process(HttpServletRequest request,  MultipartException exception) {
+    public ResponseEntity<ExceptionResponse> process(HttpServletRequest request, MultipartException exception) {
         if (logger.isInfoEnabled()) {
             logger.info(exceptionMessage("Multipart exception", request, null), exception);
         }
@@ -192,10 +195,10 @@ public class GlobalExceptionHandler implements MessageSourceAware {
         );
     }
 
-    public ResponseEntity<ExceptionResponse> errorResponse(ExceptionResponse er){
-       return ResponseEntity.ok().headers(httpHeaders -> httpHeaders.set(HAS_ERROR, "1")).body(er);
+    public ResponseEntity<ExceptionResponse> errorResponse(ExceptionResponse er) {
+        return ResponseEntity.ok().headers(httpHeaders -> httpHeaders.set(HAS_ERROR, "1")).body(er);
     }
-    
+
     /**
      * 设置异常信息，方便在前端查看异常信息
      *
@@ -203,11 +206,13 @@ public class GlobalExceptionHandler implements MessageSourceAware {
      * @param ex 异常
      */
     private void setDevException(ExceptionResponse er, Exception ex) {
-        er.setException(ex.getMessage());
-        er.setTrace(ex.getStackTrace());
-        Throwable cause = ex.getCause();
-        if (cause != null) {
-            er.setThrowable(cause.getMessage(), cause.getStackTrace());
+        if (isDev) {
+            er.setException(ex.getMessage());
+            er.setTrace(ex.getStackTrace());
+            Throwable cause = ex.getCause();
+            if (cause != null) {
+                er.setThrowable(cause.getMessage(), cause.getStackTrace());
+            }
         }
 
     }
@@ -223,5 +228,10 @@ public class GlobalExceptionHandler implements MessageSourceAware {
             messageCode = BaseConstants.ErrorCode.ERROR;
         }
         return this.messages.getMessage(messageCode, args);
+    }
+
+    @Override
+    public void setEnvironment(@NonNull Environment environment) {
+        this.isDev = environment.matchesProfiles("dev");
     }
 }
