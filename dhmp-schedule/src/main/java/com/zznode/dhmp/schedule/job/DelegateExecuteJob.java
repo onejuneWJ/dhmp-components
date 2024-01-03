@@ -34,6 +34,7 @@ public final class DelegateExecuteJob extends QuartzJobBean {
     protected void executeInternal(@NonNull JobExecutionContext context) throws JobExecutionException {
         JobDataMap jobDataMap = context.getMergedJobDataMap();
         String jobCode = jobDataMap.getString(JOB_CODE);
+        logger.trace("finding handler for jobCode [{}]", jobCode);
         AbstractJobHandler jobHandler = JobHandlerRegistry.getJobHandler(jobCode);
         if (jobHandler == null) {
             return;
