@@ -11,7 +11,7 @@
 * dhmp-export
 * dhmp-web
 * dhmp-file
-* dhmp-schedule (暂停)
+* dhmp-schedule
 
 ## 开始使用
 ### 安装
