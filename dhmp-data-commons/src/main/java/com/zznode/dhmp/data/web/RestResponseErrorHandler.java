@@ -1,6 +1,7 @@
 package com.zznode.dhmp.data.web;
 
 import com.zznode.dhmp.data.constant.CustomHeaders;
+import org.springframework.core.ResolvableType;
 import org.springframework.core.log.LogFormatUtils;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
@@ -8,16 +9,20 @@ import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.client.*;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 /**
  * 描述
@@ -25,16 +30,10 @@ import java.util.Objects;
  * @author 王俊
  */
 public class RestResponseErrorHandler extends DefaultResponseErrorHandler {
-    @Nullable
-    private List<HttpMessageConverter<?>> messageConverters;
+
+    private List<HttpMessageConverter<?>> messageConverters = Collections.emptyList();
 
 
-    /**
-     * For internal use from the RestTemplate, to pass the message converters
-     * to use to decode error content.
-     *
-     * @since 6.0
-     */
     public void setMessageConverters(List<HttpMessageConverter<?>> converters) {
         this.messageConverters = Collections.unmodifiableList(converters);
     }
@@ -67,11 +66,54 @@ public class RestResponseErrorHandler extends DefaultResponseErrorHandler {
             ex.setBodyConvertFunction(initBodyConvertFunction(response, body));
         }
         throw ex;
-
     }
 
-    private String getErrorMessage(
-            int rawStatusCode, String statusText, @Nullable byte[] responseBody, @Nullable Charset charset) {
+    @Override
+    protected Function<ResolvableType, ?> initBodyConvertFunction(ClientHttpResponse response, byte[] body) {
+        Assert.state(!CollectionUtils.isEmpty(messageConverters), "Expected message converters");
+        return resolvableType -> {
+            try {
+                HttpMessageConverterExtractor<?> extractor =
+                        new HttpMessageConverterExtractor<>(resolvableType.getType(), messageConverters);
+
+                return extractor.extractData(new ClientHttpResponse() {
+                    @Override
+                    public HttpHeaders getHeaders() {
+                        return response.getHeaders();
+                    }
+
+                    @Override
+                    public HttpStatusCode getStatusCode() throws IOException {
+                        return response.getStatusCode();
+                    }
+
+                    @Override
+                    public String getStatusText() throws IOException {
+                        return response.getStatusText();
+                    }
+
+                    /**
+                     *
+                     */
+                    @Override
+                    public void close() {
+                        response.close();
+                    }
+
+                    @Override
+                    public InputStream getBody() {
+                        return new ByteArrayInputStream(body);
+                    }
+                });
+            } catch (IOException ex) {
+                throw new RestClientException("Error while extracting response for type [" + resolvableType + "]", ex);
+            }
+        };
+    }
+
+
+    private String getErrorMessage(int rawStatusCode, String statusText, @Nullable byte[] responseBody,
+                                   @Nullable Charset charset) {
 
         String preface = rawStatusCode + " " + statusText + ": ";
 
