@@ -18,18 +18,9 @@ public class UpdateAuditListener extends AbstractUpdateListener<BaseModel> {
 
     private static final Long DEFAULT_UPDATE_BY = 0L;
 
-    private static final String SECURITY_UTIL_CLASS_NAME = "com.zznode.oauth2.core.SecurityUtil";
+    private static final String SECURITY_UTIL_CLASS_NAME = "com.zznode.dhmp.security.core.SecurityUtil";
     private final boolean securityPresent = ClassUtils.isPresent(SECURITY_UTIL_CLASS_NAME, ClassUtils.getDefaultClassLoader());
 
-    /**
-     * 该监听器支持的 entity 类型。
-     *
-     * @return type
-     */
-    @Override
-    public Class<BaseModel> supportType() {
-        return BaseModel.class;
-    }
 
     /**
      * 更新操作的前置操作。
