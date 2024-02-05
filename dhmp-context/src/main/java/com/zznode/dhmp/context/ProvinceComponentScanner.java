@@ -90,7 +90,7 @@ public final class ProvinceComponentScanner extends ClassPathBeanDefinitionScann
      * @param superclass 父类class
      */
     private void checkAndRemoveParentBean(Class<?> superclass) {
-        if (superclass == null || superclass.equals(Object.class)) {
+        if (superclass.equals(Object.class)) {
             return;
         }
         String superclassName = superclass.getName();

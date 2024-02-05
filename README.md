@@ -12,6 +12,7 @@
 * dhmp-web
 * dhmp-file
 * dhmp-schedule
+* dhmp-message (消息通知，计划中)
 
 ## 开始使用
 ### 安装
