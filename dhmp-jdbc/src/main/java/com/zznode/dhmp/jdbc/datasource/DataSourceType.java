@@ -1,20 +1,22 @@
 package com.zznode.dhmp.jdbc.datasource;
 
 /**
- * 数据源类型常量
+ * 数据源类型常量，建议数据源类型都用小写+破折号格式
  *
  * @author 王俊
  * @date create in 2023/5/25 16:32
  */
 public interface DataSourceType {
     /**
-     *
+     * 主数据源
      */
-    String MASTER = "MASTER";
-    String HGU_SPARK = "HGU_SPARK";
-    String STB_SPARK = "STB_SPARK";
-    String HBASE = "HBASE";
-    String CLICKHOUSE = "CLICKHOUSE";
+    String MASTER = "master";
+
+
+    String HGU_SPARK = "hgu-spark";
+    String STB_SPARK = "stb-spark";
+    String HBASE = "hbase";
+    String CLICKHOUSE = "clickhouse";
 
 
 }
