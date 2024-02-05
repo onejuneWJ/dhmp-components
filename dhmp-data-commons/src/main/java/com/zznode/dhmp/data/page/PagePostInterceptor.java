@@ -13,6 +13,8 @@ import org.apache.ibatis.plugin.Signature;
 import org.apache.ibatis.session.ResultHandler;
 import org.apache.ibatis.session.RowBounds;
 
+import java.util.List;
+
 /**
  * 分页拦截器执行之后的拦截器。
  * <p>在PageInterceptor拦截并设置完分页sql后，清空缓存的page，待sql执行完成之后把page设置回来。
@@ -37,7 +39,7 @@ public class PagePostInterceptor implements Interceptor {
         MappedStatement ms = (MappedStatement) args[0];
         Object parameter = args[1];
         RowBounds rowBounds = (RowBounds) args[2];
-        ResultHandler resultHandler = (ResultHandler) args[3];
+        ResultHandler<?> resultHandler = (ResultHandler<?>) args[3];
         Executor executor = (Executor) invocation.getTarget();
         CacheKey cacheKey;
         BoundSql boundSql;
@@ -54,16 +56,18 @@ public class PagePostInterceptor implements Interceptor {
 
         // 查看是否需要分页查询。
         // PageInterceptor在判断是否存需要分页后,如果需要分页,PageHelper.getLocalPage()都不会为空
-        Page page = PageHelper.getLocalPage();
+        Page<?> page = PageHelper.getLocalPage();
         if (page != null) {
             // 暂时清空分页缓存
             PageHelper.clearPage();
+            List<Object> query;
             try {
-                return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
+                 query = executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
             } finally {
                 //执行完sql之后再缓存回去。
                 PageHelper.setLocalPage(page);
             }
+            return query;
         }
         return executor.query(ms, parameter, rowBounds, resultHandler, cacheKey, boundSql);
     }

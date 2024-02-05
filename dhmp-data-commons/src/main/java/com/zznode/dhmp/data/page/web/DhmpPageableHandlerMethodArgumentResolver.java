@@ -2,7 +2,6 @@ package com.zznode.dhmp.data.page.web;
 
 import com.zznode.dhmp.data.page.domain.PageRequest;
 import com.zznode.dhmp.data.page.parser.OrderByParser;
-import jakarta.annotation.Nonnull;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -10,6 +9,7 @@ import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
 import org.springframework.data.web.SortHandlerMethodArgumentResolver;
+import org.springframework.lang.Nullable;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.support.WebDataBinderFactory;
 import org.springframework.web.context.request.NativeWebRequest;
@@ -38,8 +38,10 @@ public class DhmpPageableHandlerMethodArgumentResolver extends PageableHandlerMe
     }
 
     @Override
-    @Nonnull
-    public Pageable resolveArgument(@Nonnull MethodParameter methodParameter, ModelAndViewContainer mavContainer, @Nonnull NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+    public Pageable resolveArgument(MethodParameter methodParameter,
+                                    @Nullable ModelAndViewContainer mavContainer,
+                                    NativeWebRequest webRequest,
+                                    @Nullable WebDataBinderFactory binderFactory) {
         Pageable pageable = super.resolveArgument(methodParameter, mavContainer, webRequest, binderFactory);
         PageRequest pageRequest = PageRequest.with(pageable);
         pageRequest.setParser(getOrderByParser());
@@ -48,7 +50,7 @@ public class DhmpPageableHandlerMethodArgumentResolver extends PageableHandlerMe
     }
 
     @Override
-    public void setApplicationContext(@Nonnull ApplicationContext applicationContext) throws BeansException {
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
 

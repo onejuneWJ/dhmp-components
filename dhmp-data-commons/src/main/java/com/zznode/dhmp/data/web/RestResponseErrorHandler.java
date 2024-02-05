@@ -7,7 +7,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.lang.NonNull;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -39,13 +38,13 @@ public class RestResponseErrorHandler extends DefaultResponseErrorHandler {
     }
 
     @Override
-    public boolean hasError(@NonNull ClientHttpResponse response) throws IOException {
+    public boolean hasError(ClientHttpResponse response) throws IOException {
 
         return super.hasError(response) || Objects.equals(response.getHeaders().getFirst(CustomHeaders.HAS_ERROR), "1");
     }
 
     @Override
-    protected void handleError(@NonNull ClientHttpResponse response, @NonNull HttpStatusCode statusCode) throws IOException {
+    protected void handleError(ClientHttpResponse response, HttpStatusCode statusCode) throws IOException {
         String statusText = response.getStatusText();
         HttpHeaders headers = response.getHeaders();
         byte[] body = getResponseBody(response);

@@ -16,7 +16,6 @@ import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.jdbc.BadSqlGrammarException;
-import org.springframework.lang.NonNull;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -218,7 +217,7 @@ public class GlobalExceptionHandler implements MessageSourceAware, EnvironmentAw
     }
 
     @Override
-    public void setMessageSource(@NonNull MessageSource messageSource) {
+    public void setMessageSource(MessageSource messageSource) {
         Assert.notNull(messageSource, "messageSource cannot be null");
         this.messages = new MessageSourceAccessor(messageSource);
     }
@@ -231,7 +230,7 @@ public class GlobalExceptionHandler implements MessageSourceAware, EnvironmentAw
     }
 
     @Override
-    public void setEnvironment(@NonNull Environment environment) {
+    public void setEnvironment(Environment environment) {
         this.isDev = environment.matchesProfiles("dev");
     }
 }
