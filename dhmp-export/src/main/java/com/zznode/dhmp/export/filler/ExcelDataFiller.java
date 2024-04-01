@@ -34,6 +34,7 @@ public final class ExcelDataFiller extends AbstractDataFiller {
     @Override
     public void flush(OutputStream outputStream) {
         excelWriter.flush(outputStream);
+        excelWriter.close();
     }
 
 
