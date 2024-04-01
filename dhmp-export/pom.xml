@@ -21,7 +21,6 @@
     <properties>
         <maven.compiler.source>17</maven.compiler.source>
         <maven.compiler.target>17</maven.compiler.target>
-        <poi.version>5.2.1</poi.version>
     </properties>
 
     <dependencies>
