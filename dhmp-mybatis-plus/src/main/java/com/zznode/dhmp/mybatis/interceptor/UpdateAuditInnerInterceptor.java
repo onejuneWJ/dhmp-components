@@ -3,6 +3,8 @@ package com.zznode.dhmp.mybatis.interceptor;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.zznode.dhmp.mybatis.domain.BaseEntity;
+import com.zznode.dhmp.security.core.CustomUserDetails;
+import com.zznode.dhmp.security.core.SecurityUtil;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
@@ -40,10 +42,10 @@ public class UpdateAuditInnerInterceptor implements InnerInterceptor {
         Object et = map.getOrDefault(Constants.ENTITY, null);
         if (et instanceof BaseEntity baseEntity) {
             Long id = DEFAULT_UPDATE_BY;
-//            if (securityUtilPresent) {
-//                CustomUserDetails customUserDetails = SecurityUtil.getUserDetails();
-//                id = customUserDetails.getUserId();
-//            }
+            if (securityUtilPresent) {
+                CustomUserDetails customUserDetails = SecurityUtil.getUserDetails();
+                id = customUserDetails.getUserId();
+            }
             baseEntity.setLastUpdatedBy(id);
             baseEntity.setLastUpdateDate(new Date());
         }

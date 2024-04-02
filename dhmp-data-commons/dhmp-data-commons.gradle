@@ -1,0 +1,16 @@
+
+dependencies{
+    api(project(":dhmp-core"))
+    api("org.springframework:spring-web")
+    api("org.springframework:spring-context")
+    api("org.springframework:spring-jdbc")
+    api("org.springframework:spring-tx")
+    api("org.springframework.data:spring-data-commons")
+    api("com.fasterxml.jackson.core:jackson-databind")
+    api("com.github.pagehelper:pagehelper")
+
+    optional("org.mybatis:mybatis")
+    optional("org.springframework:spring-webmvc")
+    optional("org.springframework:spring-webflux")
+    optional("org.apache.tomcat.embed:tomcat-embed-core")
+}

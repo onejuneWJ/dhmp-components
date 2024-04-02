@@ -1,0 +1,7 @@
+
+dependencies{
+
+    api(project(":dhmp-core"))
+    api("org.springframework:spring-web")
+    optional("jakarta.servlet:jakarta.servlet-api")
+}

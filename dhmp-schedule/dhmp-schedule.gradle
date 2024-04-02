@@ -1,0 +1,12 @@
+
+dependencies{
+    api(project(":dhmp-core"))
+    api(project(":dhmp-context"))
+    api(project(":dhmp-jdbc"))
+    api(project(":dhmp-data-commons"))
+    api("org.springframework:spring-beans")
+    api("org.springframework:spring-context-support")
+    api("org.springframework:spring-webflux")
+    api("org.quartz-scheduler:quartz")
+
+}

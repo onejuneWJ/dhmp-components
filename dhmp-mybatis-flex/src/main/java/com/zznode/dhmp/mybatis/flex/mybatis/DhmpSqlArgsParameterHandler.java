@@ -39,6 +39,7 @@ import java.util.Map;
 /**
  * 重写mybatis-flex的{@link com.mybatisflex.core.mybatis.SqlArgsParameterHandler }，以兼容PageHelper的参数
  */
+@SuppressWarnings("rawtypes")
 public class DhmpSqlArgsParameterHandler implements ParameterHandler {
 
     private final TypeHandlerRegistry typeHandlerRegistry;
@@ -72,6 +73,7 @@ public class DhmpSqlArgsParameterHandler implements ParameterHandler {
     }
 
 
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private void doSetParameters(PreparedStatement ps) throws SQLException {
         Object[] sqlArgs = (Object[]) ((Map<?, ?>) parameterObject).get(FlexConsts.SQL_ARGS);
         int index = 1;
@@ -141,7 +143,7 @@ public class DhmpSqlArgsParameterHandler implements ParameterHandler {
      * @param ps    PreparedStatement
      * @param value date value
      * @param index set to index
-     * @throws SQLException
+     * @throws SQLException a SQLException
      */
     private void setDateParameter(PreparedStatement ps, Date value, int index) throws SQLException {
         if (value instanceof java.sql.Date) {

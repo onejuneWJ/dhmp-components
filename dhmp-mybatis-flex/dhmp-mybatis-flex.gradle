@@ -1,0 +1,9 @@
+dependencies {
+    api(project(":dhmp-jdbc"))
+    api(project(":dhmp-lov"))
+    api("com.mybatis-flex:mybatis-flex-spring") {
+        exclude group: "org.mybatis", module: "mybatis-spring"
+    }
+    api("org.mybatis:mybatis-spring")
+    optional("com.zznode.dhmp.security:dhmp-security-core")
+}

@@ -2,6 +2,8 @@ package com.zznode.dhmp.mybatis.interceptor;
 
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.zznode.dhmp.mybatis.domain.BaseEntity;
+import com.zznode.dhmp.security.core.CustomUserDetails;
+import com.zznode.dhmp.security.core.SecurityUtil;
 import org.apache.ibatis.executor.Executor;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlCommandType;
@@ -35,10 +37,10 @@ public class InsertAuditInnerInterceptor implements InnerInterceptor {
         if (parameter instanceof BaseEntity baseEntity) {
             Long id = DEFAULT_CREATED_BY;
             // todo need security
-//            if (securityPresent) {
-//                CustomUserDetails customUserDetails = SecurityUtil.getUserDetails();
-//                id = customUserDetails.getUserId();
-//            }
+            if (securityPresent) {
+                CustomUserDetails customUserDetails = SecurityUtil.getUserDetails();
+                id = customUserDetails.getUserId();
+            }
             baseEntity.setCreatedBy(id);
             baseEntity.setCreationDate(new Date());
             baseEntity.setLastUpdatedBy(id);

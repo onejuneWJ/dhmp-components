@@ -7,12 +7,18 @@ import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfoHelper;
 import com.baomidou.mybatisplus.core.override.MybatisMapperProxy;
 import com.baomidou.mybatisplus.core.toolkit.*;
+import com.baomidou.mybatisplus.core.toolkit.reflect.GenericTypeUtils;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.baomidou.mybatisplus.extension.toolkit.SqlHelper;
 import org.apache.ibatis.binding.MapperMethod;
 import org.apache.ibatis.binding.MapperProxy;
 import org.apache.ibatis.logging.Log;
 import org.apache.ibatis.logging.LogFactory;
 import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.mybatis.spring.SqlSessionTemplate;
+import org.springframework.aop.framework.AopProxyUtils;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,6 +40,8 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
 
     protected BaseMapper<T> baseMapper;
 
+    protected final Class<?>[] typeArguments = GenericTypeUtils.resolveTypeArguments(getClass(), ServiceImpl.class);
+
     @Autowired
     public void setBaseMapper(BaseMapper<T> baseMapper) {
         this.baseMapper = baseMapper;
@@ -51,28 +59,47 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
         return entityClass;
     }
 
-    protected Class<? extends BaseMapper<T>> currentMapperClass;
+    private volatile SqlSessionFactory sqlSessionFactory;
 
-    protected Class<? extends BaseMapper<T>> currentMapperClass() {
-        if (currentMapperClass == null) {
-            if (Proxy.isProxyClass(baseMapper.getClass())) {
-                InvocationHandler invocationHandler = Proxy.getInvocationHandler(baseMapper);
-                if (invocationHandler instanceof MybatisMapperProxy mybatisMapperProxy) {
-                    // mybatis-plus代理
-                    currentMapperClass = (Class<? extends BaseMapper<T>>) ReflectionKit.getFieldValue(mybatisMapperProxy, "mapperInterface");
-                } else if (invocationHandler instanceof MapperProxy mapperProxy) {
-                    // mybatis代理
-                    currentMapperClass = (Class<? extends BaseMapper<T>>) ReflectionKit.getFieldValue(mapperProxy, "mapperInterface");
+    @SuppressWarnings({"rawtypes"})
+    protected SqlSessionFactory getSqlSessionFactory() {
+        if (this.sqlSessionFactory == null) {
+            synchronized (this) {
+                if (this.sqlSessionFactory == null) {
+                    Object target = this.baseMapper;
+                    if (AopUtils.isAopProxy(this.baseMapper)) {
+                        target = AopProxyUtils.getSingletonTarget(this.baseMapper);
+                    }
+                    if (target != null) {
+                        if (Proxy.isProxyClass(baseMapper.getClass())) {
+                            InvocationHandler invocationHandler = Proxy.getInvocationHandler(baseMapper);
+                            if (invocationHandler instanceof MybatisMapperProxy mybatisMapperProxy) {
+                                // mybatis-plus代理
+                                SqlSessionTemplate sqlSessionTemplate = (SqlSessionTemplate) mybatisMapperProxy.getSqlSession();
+                                this.sqlSessionFactory = sqlSessionTemplate.getSqlSessionFactory();
+                            } else if (invocationHandler instanceof MapperProxy mapperProxy) {
+                                // mybatis代理
+                                @SuppressWarnings({"deprecation"})
+                                SqlSessionTemplate sqlSessionTemplate = (SqlSessionTemplate) ReflectionKit.getFieldValue(mapperProxy, "sqlSession");
+                                this.sqlSessionFactory = sqlSessionTemplate.getSqlSessionFactory();
+                            }
+                        }
+                    } else {
+                        throw new IllegalStateException("baseMapper not present");
+                    }
                 }
-            } else {
-                currentMapperClass = (Class<? extends BaseMapper<T>>) baseMapper.getClass();
             }
         }
-        return currentMapperClass;
+        return this.sqlSessionFactory;
+    }
+
+
+    protected Class<? extends BaseMapper<T>> currentMapperClass() {
+        return (Class<? extends BaseMapper<T>>) this.typeArguments[0];
     }
 
     protected Class<T> currentModelClass() {
-        return (Class<T>) ReflectionKit.getSuperClassGenericType(getClass(), BaseServiceImpl.class, 0);
+        return (Class<T>) this.typeArguments[1];
     }
 
 
@@ -128,7 +155,7 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
         Assert.notNull(tableInfo, "error: can not execute. because can not find cache of TableInfo for entity!");
         String keyProperty = tableInfo.getKeyProperty();
         Assert.notEmpty(keyProperty, "error: can not execute. because can not find column for id from entity!");
-        return SqlHelper.saveOrUpdateBatch(this.entityClass, currentMapperClass(), this.log, entityList, batchSize, (sqlSession, entity) -> {
+        return SqlHelper.saveOrUpdateBatch(getSqlSessionFactory(), currentMapperClass(), this.log, entityList, batchSize, (sqlSession, entity) -> {
             Object idVal = tableInfo.getPropertyValue(entity, keyProperty);
             return StringUtils.checkValNull(idVal)
                     || CollectionUtils.isEmpty(sqlSession.selectList(getSqlStatement(SqlMethod.SELECT_BY_ID), entity));
@@ -179,7 +206,7 @@ public abstract class BaseServiceImpl<T> implements BaseService<T> {
      * @since 3.3.1
      */
     protected <E> boolean executeBatch(Collection<E> list, int batchSize, BiConsumer<SqlSession, E> consumer) {
-        return SqlHelper.executeBatch(this.entityClass, this.log, list, batchSize, consumer);
+        return SqlHelper.executeBatch(getSqlSessionFactory(), this.log, list, batchSize, consumer);
     }
 
 
