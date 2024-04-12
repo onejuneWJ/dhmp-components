@@ -1,7 +1,7 @@
 package com.zznode.dhmp.context.util;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
 import org.springframework.context.ApplicationContext;
@@ -23,7 +23,7 @@ import java.util.concurrent.atomic.AtomicInteger;
  */
 public class ApplicationContextHelper implements ApplicationContextAware {
 
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationContextHelper.class);
+    private static final Log logger = LogFactory.getLog(ApplicationContextHelper.class);
 
     private static ConfigurableListableBeanFactory springFactory;
 
@@ -78,7 +78,7 @@ public class ApplicationContextHelper implements ApplicationContextAware {
                 executorService.shutdown();
             } else {
                 if (counter.addAndGet(1) > 240) {
-                    logger.error("Setter field [{}] in [{}] failure because timeout.", setterMethod, target.getClass().getName());
+                    logger.error(String.format("Setter field [%s] in [%s] failure because timeout.", setterMethod, target.getClass().getName()));
                     executorService.shutdown();
                 }
             }
@@ -107,7 +107,7 @@ public class ApplicationContextHelper implements ApplicationContextAware {
                 executorService.shutdown();
             } else {
                 if (counter.addAndGet(1) > 240) {
-                    logger.error("Setter field [{}] in [{}] failure because timeout.", targetField, target.getName());
+                    logger.error(String.format("Setter field [%s] in [%s] failure because timeout.", targetField, target.getName()));
                     executorService.shutdown();
                 }
             }
@@ -121,14 +121,14 @@ public class ApplicationContextHelper implements ApplicationContextAware {
                 Method method = target.getClass().getDeclaredMethod(targetMethod, type);
                 method.setAccessible(true);
                 method.invoke(target, obj);
-                logger.info("Async set field [{}] in [{}] success by method.", targetMethod, target.getClass().getName());
+                logger.info(String.format("Async set field [%s] in [%s] success by method.", targetMethod, target.getClass().getName()));
                 return true;
             } catch (NoSuchMethodException e) {
-                logger.error("Not found method [{}] in [{}].", targetMethod, target.getClass().getName(), e);
+                logger.error(String.format("Not found method [%s] in [%s].", targetMethod, target.getClass().getName()), e);
             } catch (NoSuchBeanDefinitionException e) {
-                logger.error("Not found bean [{}] for [{}].", type.getName(), target.getClass().getName(), e);
+                logger.error(String.format("Not found bean [%s] for [%s].", type.getName(), target.getClass().getName()), e);
             } catch (Exception e) {
-                logger.error("Async set field [{}] in [{}] failure by method.", targetMethod, target.getClass().getName(), e);
+                logger.error(String.format("Async set field [%s] in [%s] failure by method.", targetMethod, target.getClass().getName()), e);
             }
         }
         return false;
@@ -141,14 +141,14 @@ public class ApplicationContextHelper implements ApplicationContextAware {
                 Field field = target.getDeclaredField(targetField);
                 field.setAccessible(true);
                 field.set(target, obj);
-                logger.info("Async set field [{}] in [{}] success by field.", targetField, target.getName());
+                logger.info(String.format("Async set field [%s] in [%s] success by field.", targetField, target.getName()));
                 return true;
             } catch (NoSuchFieldException e) {
-                logger.error("Not found field [{}] in [{}].", targetField, target.getName(), e);
+                logger.error(String.format("Not found field [%s] in [%s].", targetField, target.getName()), e);
             } catch (NoSuchBeanDefinitionException e) {
-                logger.error("Not found bean [{}] for [{}].", type.getName(), target.getName(), e);
+                logger.error(String.format("Not found bean [%s] for [%s].", type.getName(), target.getName()), e);
             } catch (Exception e) {
-                logger.error("Async set field [{}] in [{}] failure by field.", targetField, target.getName(), e);
+                logger.error(String.format("Async set field [%s] in [%s] failure by field.", targetField, target.getName()), e);
             }
         }
         return false;

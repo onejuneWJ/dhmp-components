@@ -4,8 +4,8 @@ import com.zznode.dhmp.core.constant.BaseConstants;
 import com.zznode.dhmp.export.ExportContext;
 import com.zznode.dhmp.export.constants.ReportType;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -22,7 +22,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class ResponseHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(ResponseHelper.class);
+    private static final Log logger = LogFactory.getLog(ResponseHelper.class);
 
     public static void setRequestResponseHeader(HttpServletResponse response) {
         response.setStatus(HttpStatus.OK.value());

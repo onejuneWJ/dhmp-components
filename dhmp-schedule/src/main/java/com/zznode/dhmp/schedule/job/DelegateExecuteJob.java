@@ -3,11 +3,11 @@ package com.zznode.dhmp.schedule.job;
 import com.zznode.dhmp.schedule.handler.AbstractJobHandler;
 import com.zznode.dhmp.schedule.manage.JobRecordManager;
 import com.zznode.dhmp.schedule.registry.JobHandlerRegistry;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.quartz.JobDataMap;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.lang.NonNull;
 import org.springframework.scheduling.quartz.QuartzJobBean;
 
@@ -22,7 +22,7 @@ import static com.zznode.dhmp.schedule.constants.JobConstants.JOB_CODE;
  * @author 王俊
  */
 public final class DelegateExecuteJob extends QuartzJobBean {
-    private final Logger logger = LoggerFactory.getLogger(DelegateExecuteJob.class);
+    private final Log logger = LogFactory.getLog(DelegateExecuteJob.class);
 
     private final JobRecordManager jobRecordManager;
 
@@ -34,7 +34,7 @@ public final class DelegateExecuteJob extends QuartzJobBean {
     protected void executeInternal(@NonNull JobExecutionContext context) throws JobExecutionException {
         JobDataMap jobDataMap = context.getMergedJobDataMap();
         String jobCode = jobDataMap.getString(JOB_CODE);
-        logger.trace("finding handler for jobCode [{}]", jobCode);
+        logger.trace(String.format("finding handler for jobCode [%s]", jobCode));
         AbstractJobHandler jobHandler = JobHandlerRegistry.getJobHandler(jobCode);
         if (jobHandler == null) {
             return;
@@ -44,7 +44,7 @@ public final class DelegateExecuteJob extends QuartzJobBean {
             jobHandler.run();
             jobRecordManager.addJobRecord(jobCode, 1);
         } catch (Exception e) {
-            logger.error("error occurred while executing job {}.", jobCode, e);
+            logger.error(String.format("error occurred while executing job %s.", jobCode), e);
             jobRecordManager.addJobRecord(jobCode, 0, traceToString(e.getStackTrace()));
         }
     }

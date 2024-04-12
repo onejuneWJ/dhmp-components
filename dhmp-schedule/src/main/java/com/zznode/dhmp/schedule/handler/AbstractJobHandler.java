@@ -1,10 +1,8 @@
 package com.zznode.dhmp.schedule.handler;
 
-import com.zznode.dhmp.context.util.ApplicationContextHelper;
-import com.zznode.dhmp.schedule.manage.JobRecordManager;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.quartz.JobExecutionContext;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * 任务执行器抽象类
@@ -13,7 +11,7 @@ import org.slf4j.LoggerFactory;
  */
 public abstract class AbstractJobHandler {
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Log logger = LogFactory.getLog(getClass());
 
 
     protected JobExecutionContext context;

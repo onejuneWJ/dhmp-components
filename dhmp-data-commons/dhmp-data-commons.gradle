@@ -1,11 +1,12 @@
-
-dependencies{
+dependencies {
     api(project(":dhmp-core"))
     api("org.springframework:spring-web")
     api("org.springframework:spring-context")
     api("org.springframework:spring-jdbc")
     api("org.springframework:spring-tx")
-    api("org.springframework.data:spring-data-commons")
+    api("org.springframework.data:spring-data-commons") {
+        exclude group: "org.slf4j", module: "slf4j-api"
+    }
     api("com.fasterxml.jackson.core:jackson-databind")
     api("com.github.pagehelper:pagehelper")
 

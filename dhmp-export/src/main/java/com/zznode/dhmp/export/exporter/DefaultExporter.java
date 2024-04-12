@@ -5,8 +5,8 @@ import com.zznode.dhmp.export.ExportContext;
 import com.zznode.dhmp.export.filler.DataFiller;
 import com.zznode.dhmp.export.utils.ResponseHelper;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
 
 import java.io.IOException;
@@ -21,7 +21,7 @@ import java.time.Duration;
  */
 public class DefaultExporter implements Exporter {
 
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Log logger = LogFactory.getLog(getClass());
 
     private final ExportContext exportContext;
 
@@ -41,7 +41,7 @@ public class DefaultExporter implements Exporter {
         long start = System.nanoTime();
         fillData(data);
         long end = System.nanoTime();
-        logger.debug("fill data total cost: {} ms", Duration.ofNanos(end - start).toMillis());
+        logger.debug(String.format("fill data total cost: %s ms", Duration.ofNanos(end - start).toMillis()));
         // 响应相关设置放在最后，不然报错会有问题
         ResponseHelper.setExportResponseHeader(getExportContext());
         HttpServletResponse response = exportContext.response();

@@ -7,8 +7,8 @@ import com.zznode.dhmp.export.utils.ExportHelper;
 import jakarta.servlet.ServletRequest;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.core.MethodParameter;
 import org.springframework.lang.NonNull;
@@ -31,7 +31,7 @@ import java.lang.reflect.Method;
  */
 public class ExportContextHandlerMethodArgumentResolver implements HandlerMethodArgumentResolver {
 
-    private final Logger logger = LoggerFactory.getLogger(ExportContextHandlerMethodArgumentResolver.class);
+    private final Log logger = LogFactory.getLog(getClass());
 
     private final ExportHelper exportHelper;
 

@@ -1,7 +1,5 @@
 package com.zznode.dhmp.context;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactoryUtils;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -21,7 +19,6 @@ import java.util.*;
  */
 public final class ProvinceComponentScanner extends ClassPathBeanDefinitionScanner {
 
-    private final Logger logger = LoggerFactory.getLogger(ProvinceComponentScanner.class);
 
     private final BeanDefinitionRegistry registry;
 
@@ -44,11 +41,11 @@ public final class ProvinceComponentScanner extends ClassPathBeanDefinitionScann
 
     @Override
     public int scan(String... basePackages) {
-        logger.info("scanning province customizer component in packages {}", Arrays.toString(basePackages));
+        logger.info(String.format("scanning province customizer component in packages %s", Arrays.toString(basePackages)));
         long startTime = System.nanoTime();
         int count = super.scan(basePackages);
         Duration duration = Duration.ofNanos(System.nanoTime() - startTime);
-        logger.info("Finished ProvinceComponent scanning in {} ms.", duration.toMillis());
+        logger.info(String.format("Finished ProvinceComponent scanning in %s ms.", duration.toMillis()));
         return count;
     }
 

@@ -1,13 +1,13 @@
 package com.zznode.dhmp.jdbc.datasource;
 
 import com.zznode.dhmp.jdbc.datasource.annotation.UseDynamicDataSource;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 
@@ -21,7 +21,7 @@ import org.springframework.util.Assert;
 @Aspect
 public class DynamicDataSourceAspect {
 
-    private final Logger logger = LoggerFactory.getLogger(DynamicDataSourceAspect.class);
+    private final Log logger = LogFactory.getLog(DynamicDataSourceAspect.class);
 
     @Pointcut("@annotation(com.zznode.dhmp.jdbc.datasource.annotation.UseDynamicDataSource) || " +
             " @within(com.zznode.dhmp.jdbc.datasource.annotation.UseDynamicDataSource)")
@@ -32,7 +32,7 @@ public class DynamicDataSourceAspect {
     public Object around(ProceedingJoinPoint point) throws Throwable {
         logger.info("starting point");
         String dataSourceType = getDataSource(point);
-        logger.info("setting current dataSource with type: {}", dataSourceType);
+        logger.info(String.format("setting current dataSource with type: %s", dataSourceType));
         DynamicDataSourceContextHolder.setDataSourceType(dataSourceType);
         try {
             return point.proceed();

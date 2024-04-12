@@ -12,11 +12,11 @@ import com.zznode.dhmp.export.utils.ExportHelper;
 import com.zznode.dhmp.export.utils.ResponseHelper;
 import com.zznode.dhmp.export.utils.ResponseWriter;
 import jakarta.servlet.http.HttpServletResponse;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
@@ -36,7 +36,7 @@ import java.time.Duration;
 @Aspect
 public final class ExportAspect implements MessageSourceAware, InitializingBean {
 
-    private final Logger logger = LoggerFactory.getLogger(ExportAspect.class);
+    private final Log logger = LogFactory.getLog(ExportAspect.class);
 
 
     private MessageSourceAccessor messages = DhmpMessageSource.getAccessor();
@@ -104,12 +104,12 @@ public final class ExportAspect implements MessageSourceAware, InitializingBean 
         long getDataStart = System.nanoTime();
         Iterable<?> data = exeForExportData(joinPoint.proceed());
         long getDataEnd = System.nanoTime();
-        logger.debug("fetch data cost {} ms", Duration.ofNanos(getDataEnd - getDataStart).toMillis());
+        logger.debug(String.format("fetch data cost %s ms", Duration.ofNanos(getDataEnd - getDataStart).toMillis()));
         getExportFactory()
                 .createExporter(exportContext)
                 .export(data);
         long exportEnd = System.nanoTime();
-        logger.debug("export data cost {} ms", Duration.ofNanos(exportEnd - getDataEnd).toMillis());
+        logger.debug(String.format("export data cost %s ms", Duration.ofNanos(exportEnd - getDataEnd).toMillis()));
     }
 
     /**

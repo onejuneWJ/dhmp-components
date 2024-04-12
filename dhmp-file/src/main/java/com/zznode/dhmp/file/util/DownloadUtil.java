@@ -6,8 +6,8 @@ import com.zznode.dhmp.core.exception.CommonException;
 import com.zznode.dhmp.file.constant.FileErrorCode;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletResponse;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.http.MediaType;
 
 import java.io.IOException;
@@ -16,7 +16,7 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 
 public class DownloadUtil {
-    private static final Logger logger = LoggerFactory.getLogger(DownloadUtil.class);
+    private static final Log logger = LogFactory.getLog(DownloadUtil.class);
 
     /**
      * 下载文件到响应

@@ -3,6 +3,7 @@ package com.zznode.dhmp.core.exception;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.io.Serial;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -15,6 +16,9 @@ import java.util.Map;
  * @date create in 2023/6/28 11:01
  */
 public class CommonException extends RuntimeException {
+
+    @Serial
+    private static final long serialVersionUID = -5604423821204573980L;
 
     private final transient Object[] parameters;
 

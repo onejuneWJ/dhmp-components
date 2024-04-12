@@ -1,7 +1,7 @@
 package com.zznode.dhmp.lov.client;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
@@ -23,7 +23,7 @@ import static com.zznode.dhmp.lov.constant.LovConstants.LOV_CACHE_NAME;
  */
 public class LovCache implements InitializingBean {
 
-    private static final Logger logger = LoggerFactory.getLogger(LovCache.class);
+    private static final Log logger = LogFactory.getLog(LovCache.class);
 
     private final Cache cache;
 

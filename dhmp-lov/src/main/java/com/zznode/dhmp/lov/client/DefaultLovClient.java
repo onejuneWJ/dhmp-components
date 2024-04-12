@@ -1,10 +1,10 @@
 package com.zznode.dhmp.lov.client;
 
-import com.zznode.dhmp.lov.manager.LovManager;
 import com.zznode.dhmp.lov.constant.LovConstants;
 import com.zznode.dhmp.lov.domain.LovValue;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.zznode.dhmp.lov.manager.LovManager;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.cache.concurrent.ConcurrentMapCache;
 import org.springframework.util.Assert;
 
@@ -23,7 +23,7 @@ import static com.zznode.dhmp.lov.constant.LovConstants.LOV_CACHE_NAME;
  */
 public class DefaultLovClient implements LovClient {
 
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    private final Log logger = LogFactory.getLog(getClass());
 
 
     /**
@@ -47,14 +47,14 @@ public class DefaultLovClient implements LovClient {
 
     @Override
     public String translate(String code, String value) {
-        logger.trace("starting translate lov code: {} of value: {}", code, value);
+        logger.trace(String.format("starting translate lov code: %s of value: %s", code, value));
         Map<String, String> map = lovCache.getLovValueCache(specifyCacheKey(code), () -> getFromDb(code));
         if (map == null || map.isEmpty()) {
             logger.error("cannot translate. cannot find lov of code: " + code);
             return null;
         }
         String translated = map.get(value);
-        logger.trace("completed translate value: {}", translated);
+        logger.trace(String.format("completed translate value: %s", translated));
         return translated;
     }
 

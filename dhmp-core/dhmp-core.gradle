@@ -4,5 +4,4 @@ dependencies{
     api("org.springframework:spring-context")
     api("cn.hutool:hutool-all")
     api("jakarta.annotation:jakarta.annotation-api")
-    api("org.apache.logging.log4j:log4j-to-slf4j")
 }

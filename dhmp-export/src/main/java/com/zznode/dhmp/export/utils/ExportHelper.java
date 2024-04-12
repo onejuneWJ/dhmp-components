@@ -16,8 +16,8 @@ import com.zznode.dhmp.export.converter.*;
 import com.zznode.dhmp.export.dto.ExportColumn;
 import com.zznode.dhmp.export.dto.ExportParam;
 import jakarta.annotation.Nonnull;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -40,7 +40,7 @@ import java.util.stream.StreamSupport;
  */
 public class ExportHelper {
 
-    private static final Logger logger = LoggerFactory.getLogger(ExportHelper.class);
+    private static final Log logger = LogFactory.getLog(ExportHelper.class);
 
     /**
      * 每个类的字段缓存
@@ -165,7 +165,7 @@ public class ExportHelper {
                 }
                 return convertValue;
             }
-            logger.warn("value for column[{}] is not supported for converter [{}]", columnName, converter.getClass().getName());
+            logger.warn(String.format("value for column[%s] is not supported for converter [%s]", columnName, converter.getClass().getName()));
         }
         String pattern = reportColumn.pattern();
         if (StringUtils.hasText(pattern)) {
@@ -272,7 +272,7 @@ public class ExportHelper {
         String exportClassName = exportClass.getName();
         return COLUMN_CACHE.computeIfAbsent(exportClass, (key) -> {
                     if (!exportClass.isAnnotationPresent(ReportSheet.class)) {
-                        logger.error("导出类[{}]请使用 @ReportSheet 标注", exportClassName);
+                        logger.error(String.format("导出类[%s]请使用 @ReportSheet 标注", exportClassName));
                         throw new IllegalStateException(String.format("导出类[%s]请使用 @ReportSheet 标注", exportClassName));
                     }
                     return getExportColumnFromClass(exportClass);

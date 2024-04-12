@@ -5,27 +5,31 @@ import com.zznode.dhmp.core.exception.CommonException;
 import com.zznode.dhmp.core.exception.OptimisticLockException;
 import com.zznode.dhmp.core.message.DhmpMessageSource;
 import jakarta.servlet.http.HttpServletRequest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.MessageSource;
 import org.springframework.context.MessageSourceAware;
-import org.springframework.context.support.MessageSourceAccessor;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.jdbc.BadSqlGrammarException;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.multipart.MultipartException;
+import org.springframework.web.util.BindErrorUtils;
 
 import java.sql.SQLException;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 import static com.zznode.dhmp.data.constant.CustomHeaders.HAS_ERROR;
@@ -39,8 +43,8 @@ import static com.zznode.dhmp.data.constant.CustomHeaders.HAS_ERROR;
 @ControllerAdvice(annotations = {RestController.class})
 public class GlobalExceptionHandler implements MessageSourceAware, EnvironmentAware {
 
-    private final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
-    MessageSourceAccessor messages = DhmpMessageSource.getAccessor();
+    private final Log logger = LogFactory.getLog(GlobalExceptionHandler.class);
+    MessageSource messages = DhmpMessageSource.getInstance();
 
     private boolean isDev = false;
 
@@ -82,7 +86,11 @@ public class GlobalExceptionHandler implements MessageSourceAware, EnvironmentAw
         if (logger.isInfoEnabled()) {
             logger.info(exceptionMessage("Method arg invalid exception", request, method), exception);
         }
-        String defaultMessage = exception.getBindingResult().getAllErrors().get(0).getDefaultMessage();
+        String defaultMessage = translateMessage("error.data_invalid");
+        if (exception.hasErrors()) {
+            Map<ObjectError, String> resolve = BindErrorUtils.resolve(exception.getAllErrors(), this.messages, Locale.getDefault());
+            defaultMessage = resolve.values().stream().findFirst().orElse(translateMessage("error.data_invalid"));
+        }
         ExceptionResponse er = new ExceptionResponse(defaultMessage);
         setDevException(er, exception);
         return errorResponse(er);
@@ -187,7 +195,7 @@ public class GlobalExceptionHandler implements MessageSourceAware, EnvironmentAw
         return errorResponse(er);
     }
 
-    private String exceptionMessage(String message, HttpServletRequest request, HandlerMethod method) {
+    private String exceptionMessage(String message, HttpServletRequest request, @Nullable HandlerMethod method) {
         return String.format(message + ", Request: {URI=%s, method=%s}",
                 request.getRequestURI(),
                 Optional.ofNullable(method).map(HandlerMethod::toString).orElse("")
@@ -219,14 +227,14 @@ public class GlobalExceptionHandler implements MessageSourceAware, EnvironmentAw
     @Override
     public void setMessageSource(MessageSource messageSource) {
         Assert.notNull(messageSource, "messageSource cannot be null");
-        this.messages = new MessageSourceAccessor(messageSource);
+        this.messages = messageSource;
     }
 
     private String translateMessage(String messageCode, Object... args) {
         if (!StringUtils.hasText(messageCode)) {
             messageCode = BaseConstants.ErrorCode.ERROR;
         }
-        return this.messages.getMessage(messageCode, args);
+        return this.messages.getMessage(messageCode, args, Locale.getDefault());
     }
 
     @Override

@@ -4,8 +4,8 @@ import com.zznode.dhmp.export.ExportConfig;
 import com.zznode.dhmp.export.ExportContext;
 import com.zznode.dhmp.export.dto.ExportColumn;
 import com.zznode.dhmp.export.utils.ExportHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.util.Assert;
 
 import java.time.Duration;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
  * @date create in 2023/7/20 17:28
  */
 public abstract class AbstractDataFiller implements DataFiller {
-    protected final Logger logger = LoggerFactory.getLogger(getClass());
+    protected final Log logger = LogFactory.getLog(getClass());
 
     private final List<ExportColumn> columnList;
     private final ExportHelper exportHelper;
