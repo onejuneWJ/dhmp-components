@@ -1,7 +1,8 @@
 package com.zznode.dhmp.context;
 
 
-import java.util.HashSet;
+import cn.hutool.core.collection.ConcurrentHashSet;
+
 import java.util.Set;
 
 /**
@@ -12,7 +13,7 @@ import java.util.Set;
  */
 public final class RegisteredBeansRegistry {
 
-    private static final Set<String>  REGISTERED_BEANS = new HashSet<>(8);
+    private static final Set<String>  REGISTERED_BEANS = new ConcurrentHashSet<>(8);
 
     public static void add(String beanClassName) {
         REGISTERED_BEANS.add(beanClassName);
