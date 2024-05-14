@@ -13,5 +13,5 @@ dependencies {
     optional("org.mybatis:mybatis")
     optional("org.springframework:spring-webmvc")
     optional("org.springframework:spring-webflux")
-    optional("org.apache.tomcat.embed:tomcat-embed-core")
+    optional("jakarta.servlet:jakarta.servlet-api")
 }

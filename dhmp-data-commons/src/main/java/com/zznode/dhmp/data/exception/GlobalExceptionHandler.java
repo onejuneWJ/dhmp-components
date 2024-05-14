@@ -59,7 +59,7 @@ public class GlobalExceptionHandler implements MessageSourceAware, EnvironmentAw
     }
 
     /**
-     * 拦截处理 Valid 异常
+     * 拦截处理 MultipartException 异常
      *
      * @param exception 异常
      * @return ExceptionResponse
@@ -89,7 +89,7 @@ public class GlobalExceptionHandler implements MessageSourceAware, EnvironmentAw
         String defaultMessage = translateMessage("error.data_invalid");
         if (exception.hasErrors()) {
             Map<ObjectError, String> resolve = BindErrorUtils.resolve(exception.getAllErrors(), this.messages, Locale.getDefault());
-            defaultMessage = resolve.values().stream().findFirst().orElse(translateMessage("error.data_invalid"));
+            defaultMessage = resolve.values().stream().findFirst().orElse(defaultMessage);
         }
         ExceptionResponse er = new ExceptionResponse(defaultMessage);
         setDevException(er, exception);
@@ -142,7 +142,7 @@ public class GlobalExceptionHandler implements MessageSourceAware, EnvironmentAw
         if (logger.isErrorEnabled()) {
             logger.error(exceptionMessage("Illegal argument exception", request, method), exception);
         }
-        ExceptionResponse er = new ExceptionResponse(translateMessage(BaseConstants.ErrorCode.DATA_INVALID));
+        ExceptionResponse er = new ExceptionResponse(translateMessage(BaseConstants.ErrorCode.DATA_INVALID) + ": " + exception.getMessage());
         setDevException(er, exception);
         return errorResponse(er);
     }
