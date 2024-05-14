@@ -1,6 +1,6 @@
-package com.zznode.dhmp.export.filler;
+package com.zznode.dhmp.export.support.filler;
 
-import com.zznode.dhmp.export.ExportConfig;
+import com.zznode.dhmp.export.config.ExportConfigProperties;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -31,7 +31,7 @@ public interface DataFiller {
     /**
      * 配置
      *
-     * @param exportConfig 配置文件
+     * @param exportConfigProperties 配置文件
      */
-    void configure(ExportConfig exportConfig);
+    void configure(ExportConfigProperties exportConfigProperties);
 }

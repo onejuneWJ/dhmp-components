@@ -1,7 +1,8 @@
-package com.zznode.dhmp.export.filler;
+package com.zznode.dhmp.export.support.filler;
 
 import cn.hutool.poi.excel.ExcelWriter;
 import com.zznode.dhmp.export.ExportContext;
+import com.zznode.dhmp.export.utils.ExportHelper;
 
 import java.io.OutputStream;
 import java.util.List;
@@ -16,8 +17,8 @@ public final class ExcelDataFiller extends AbstractDataFiller {
 
     private final ExcelWriter excelWriter;
 
-    public ExcelDataFiller(ExportContext exportContext) {
-        super(exportContext);
+    public ExcelDataFiller(ExportContext exportContext, ExportHelper exportHelper) {
+        super(exportContext, exportHelper);
         this.excelWriter = new ExcelWriter(true);
     }
 

@@ -1,8 +1,10 @@
-package com.zznode.dhmp.export.dto;
+package com.zznode.dhmp.export;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.zznode.dhmp.export.annotation.ReportColumn;
+import org.springframework.lang.Nullable;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +18,12 @@ import java.util.stream.Collectors;
  */
 public class ExportColumn implements Cloneable, Serializable {
 
+    @Serial
+    private static final long serialVersionUID = 4200807854910297488L;
+
     private Long id;
 
+    @Nullable
     private Long parentId;
 
     /**
@@ -32,7 +38,7 @@ public class ExportColumn implements Cloneable, Serializable {
     /**
      * 排序
      */
-    private int order;
+    private int order = 0;
 
     /**
      * 字段类型(Integer、String。。。)
@@ -42,7 +48,7 @@ public class ExportColumn implements Cloneable, Serializable {
     /**
      * 字段列表
      */
-    private List<ExportColumn> children;
+    private List<ExportColumn> children = new ArrayList<>();
 
     private Boolean checked;
 
@@ -50,12 +56,12 @@ public class ExportColumn implements Cloneable, Serializable {
     @JsonIgnore
     private transient ReportColumn reportColumn;
 
-    public ExportColumn(Long id, String title, String name, Long rootId) {
+    public ExportColumn(Long id, String title, String name, @Nullable Long rootId) {
         this(id, title, name, rootId, false);
     }
 
 
-    public ExportColumn(Long id, String title, String name, Long rootId, boolean checked) {
+    public ExportColumn(Long id, String title, String name, @Nullable Long rootId, boolean checked) {
         this.id = id;
         this.title = title;
         this.name = name;
@@ -77,13 +83,11 @@ public class ExportColumn implements Cloneable, Serializable {
         try {
             ExportColumn clone = (ExportColumn) super.clone();
             List<ExportColumn> children = getChildren();
-            if (children != null) {
-                List<ExportColumn> cloneChildren = new ArrayList<>();
-                for (ExportColumn child : children) {
-                    cloneChildren.add(child.clone());
-                }
-                clone.setChildren(cloneChildren);
+            List<ExportColumn> cloneChildren = new ArrayList<>();
+            for (ExportColumn child : children) {
+                cloneChildren.add(child.clone());
             }
+            clone.setChildren(cloneChildren);
 
             return clone;
         } catch (CloneNotSupportedException e) {
@@ -99,6 +103,7 @@ public class ExportColumn implements Cloneable, Serializable {
         this.id = id;
     }
 
+    @Nullable
     public Long getParentId() {
         return parentId;
     }

@@ -1,8 +1,7 @@
-package com.zznode.dhmp.export.exporter;
+package com.zznode.dhmp.export.support.exporter;
 
-import com.zznode.dhmp.export.ExportConfig;
 import com.zznode.dhmp.export.ExportContext;
-import com.zznode.dhmp.export.filler.DataFiller;
+import com.zznode.dhmp.export.support.filler.DataFiller;
 import com.zznode.dhmp.export.utils.ResponseHelper;
 import jakarta.servlet.http.HttpServletResponse;
 import org.apache.commons.logging.Log;
@@ -43,14 +42,9 @@ public class DefaultExporter implements Exporter {
         long end = System.nanoTime();
         logger.debug(String.format("fill data total cost: %s ms", Duration.ofNanos(end - start).toMillis()));
         // 响应相关设置放在最后，不然报错会有问题
-        ResponseHelper.setExportResponseHeader(getExportContext());
+        ResponseHelper.setExportResponseHeader(exportContext);
         HttpServletResponse response = exportContext.response();
         flush(response.getOutputStream());
-    }
-
-    @Override
-    public void configure(ExportConfig exportConfig) {
-        this.dataFiller.configure(exportConfig);
     }
 
     protected void flush(OutputStream outputStream) throws IOException {

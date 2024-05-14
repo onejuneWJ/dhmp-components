@@ -6,19 +6,20 @@ import cn.hutool.core.util.ReflectUtil;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.zznode.dhmp.export.ExportConfig;
+import com.zznode.dhmp.export.ExportColumn;
 import com.zznode.dhmp.export.ExportContext;
+import com.zznode.dhmp.export.ExportParam;
 import com.zznode.dhmp.export.annotation.ReportColumn;
 import com.zznode.dhmp.export.annotation.ReportColumn.EnumConvert;
 import com.zznode.dhmp.export.annotation.ReportSheet;
 import com.zznode.dhmp.export.annotation.ReportSheet.Suffix;
+import com.zznode.dhmp.export.config.ExportConfigProperties;
 import com.zznode.dhmp.export.converter.*;
-import com.zznode.dhmp.export.dto.ExportColumn;
-import com.zznode.dhmp.export.dto.ExportParam;
-import jakarta.annotation.Nonnull;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.lang.NonNull;
+import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
@@ -53,25 +54,26 @@ public class ExportHelper {
     /**
      * 导出配置
      */
-    private ExportConfig exportConfig = new ExportConfig();
+    private ExportConfigProperties exportConfigProperties = new ExportConfigProperties();
 
     private LovConverter lovConverter;
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    public ExportConfig getExportConfig() {
-        return exportConfig;
+    public ExportConfigProperties getExportConfig() {
+        return exportConfigProperties;
     }
 
-    public void setExportConfig(ExportConfig exportConfig) {
-        Assert.notNull(exportConfig, "ExportConfig cannot be null");
-        this.exportConfig = exportConfig;
+    public void setExportConfig(ExportConfigProperties exportConfigProperties) {
+        Assert.notNull(exportConfigProperties, "ExportConfig cannot be null");
+        this.exportConfigProperties = exportConfigProperties;
     }
 
     public void setLovConverter(LovConverter lovConverter) {
         this.lovConverter = lovConverter;
     }
 
+    @Nullable
     public LovConverter getLovConverter() {
         return lovConverter;
     }
@@ -85,7 +87,7 @@ public class ExportHelper {
         this.objectMapper = objectMapper;
     }
 
-    public String getSheetName(Class<?> exportClass) {
+    public static String getSheetName(Class<?> exportClass) {
         ReportSheet reportSheet = AnnotationUtils.findAnnotation(exportClass, ReportSheet.class);
         if (reportSheet == null) {
             throw new IllegalStateException("No ReportSheet found");
@@ -99,7 +101,7 @@ public class ExportHelper {
      * @param reportSheet reportSheet
      * @return 文件名
      */
-    public String getSheetName(@Nonnull ReportSheet reportSheet) {
+    public static String getSheetName(@NonNull ReportSheet reportSheet) {
         String title = reportSheet.value();
         if (!StringUtils.hasText(title)) {
             title = "报表";
@@ -111,7 +113,7 @@ public class ExportHelper {
         return title;
     }
 
-    private String generateReportTitleSuffix(Suffix suffix) {
+    private static String generateReportTitleSuffix(Suffix suffix) {
         return switch (suffix.suffixType()) {
             case DATE -> LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyyMMddHHmmss"));
             case UUID -> UUID.randomUUID().toString().replaceAll("-", "");
@@ -126,7 +128,11 @@ public class ExportHelper {
      * @param data         字段所属对象
      * @return 值
      */
-    public Object getFieldValue(ExportColumn exportColumn, Object data) {
+    @Nullable
+    public Object getFieldValue(ExportColumn exportColumn, @Nullable Object data) {
+        if (data == null) {
+            return null;
+        }
         String columnName = exportColumn.getName();
         Object fieldValue = getFieldValue(columnName, data);
         ReportColumn reportColumn = exportColumn.getReportColumn();
@@ -159,13 +165,9 @@ public class ExportHelper {
         if (converterClass != DefaultConverter.class) {
             Converter converter = ConverterFactory.getInstance(converterClass);
             if (converter.supports(fieldValue)) {
-                Object convertValue = converter.convert(fieldValue, data);
-                if (convertValue == null && !getExportConfig().getReturnNullWhenNoneReplaceField()) {
-                    return fieldValue;
-                }
-                return convertValue;
+                return converter.convert(fieldValue, data);
             }
-            logger.warn(String.format("value for column[%s] is not supported for converter [%s]", columnName, converter.getClass().getName()));
+            logger.warn(String.format("value for column [%s] is not supported for converter [%s]. ", columnName, converter.getClass().getName()));
         }
         String pattern = reportColumn.pattern();
         if (StringUtils.hasText(pattern)) {
@@ -179,6 +181,7 @@ public class ExportHelper {
         return enumConverter.convert(fieldValue, data);
     }
 
+    @Nullable
     private String translateLov(String lovCode, Object fieldValue) {
         if (lovConverter == null) {
             logger.warn("LovConverter is null. will not translate");
@@ -196,16 +199,19 @@ public class ExportHelper {
      * @param pattern 格式
      * @return 格式化后的数据
      */
-    private String format(Object o, String pattern) {
+    @Nullable
+    private String format(@Nullable Object o, String pattern) {
         if (o == null) {
             return null;
         }
         String value = o.toString();
         if (o instanceof Number) {
             value = NumberUtil.decimalFormat(pattern, o);
-        } else if (o instanceof Date date) {
+        }
+        else if (o instanceof Date date) {
             value = DateUtil.format(date, pattern);
-        } else if (o instanceof TemporalAccessor temporalAccessor) {
+        }
+        else if (o instanceof TemporalAccessor temporalAccessor) {
             value = DateTimeFormatter.ofPattern(pattern).format(temporalAccessor);
         }
         // 剩下的不想写了，建议使用自定义的Converter
@@ -220,6 +226,7 @@ public class ExportHelper {
      * @param data      字段所属对象
      * @return 字段值
      */
+    @Nullable
     public Object getFieldValue(String fieldName, Object data) {
         // 支持List<Map<String, Object>>数据导出
         if (data instanceof Map<?, ?> map) {
@@ -242,14 +249,15 @@ public class ExportHelper {
      * @param data             字段所属对象
      * @return 代替字段值
      */
-    public Object getReplaceValue(String replaceFieldName, Object fieldValue, Object data) {
+    @Nullable
+    public Object getReplaceValue(String replaceFieldName, @Nullable Object fieldValue, Object data) {
         if (StringUtils.hasText(replaceFieldName) && hasField(data, replaceFieldName)) {
             // 返回代替字段值
             return getFieldValue(replaceFieldName, data);
         }
-        // 如果没有代替字段，则返回null
-        // 此处需要配置,返回原字段值还是null
-        return getExportConfig().getReturnNullWhenNoneReplaceField() ? null : fieldValue;
+        // 如果没有代替字段，则返回原字段值
+        logger.warn("no replace field supplied, return original field value");
+        return fieldValue;
     }
 
     /**

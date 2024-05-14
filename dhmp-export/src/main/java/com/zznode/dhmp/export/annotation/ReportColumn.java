@@ -41,7 +41,7 @@ public @interface ReportColumn {
     /**
      * 列排序
      */
-    int order() default 1;
+    int order() default 0;
 
     /**
      * 前端默认选中
@@ -59,6 +59,7 @@ public @interface ReportColumn {
      * <p>用于值集翻译
      */
     String lovCode() default "";
+
     /**
      * 枚举转换
      */

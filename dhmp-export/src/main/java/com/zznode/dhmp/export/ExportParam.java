@@ -1,7 +1,6 @@
-package com.zznode.dhmp.export.dto;
+package com.zznode.dhmp.export;
 
 import com.zznode.dhmp.export.constants.ReportType;
-import com.zznode.dhmp.export.constants.RequestType;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -16,10 +15,6 @@ import java.util.Set;
  */
 
 public class ExportParam {
-    /**
-     * 导出请求类型
-     */
-    private RequestType requestType;
 
     /**
      * 报表类型
@@ -45,27 +40,17 @@ public class ExportParam {
      */
     private String columns;
 
+    /**
+     * 导出csv时的字段分隔符
+     */
     private char fieldSeparator = ',';
-
-    public boolean isColumnRequest() {
-        return RequestType.COLUMN.equals(requestType);
-    }
 
 
     public void validateParam() {
-
-        Assert.notNull(requestType, "requestType must not be null");
         Assert.notNull(type, "type must not be null");
         Assert.isTrue(Objects.nonNull(ids) || StringUtils.hasText(columns), "export columns must not be null");
     }
 
-    public RequestType getRequestType() {
-        return requestType;
-    }
-
-    public void setRequestType(RequestType requestType) {
-        this.requestType = requestType;
-    }
 
     public ReportType getType() {
         return type;

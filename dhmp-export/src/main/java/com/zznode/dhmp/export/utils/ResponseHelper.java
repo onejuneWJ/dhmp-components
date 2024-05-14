@@ -28,7 +28,7 @@ public class ResponseHelper {
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.displayName());
-        response.addHeader(HttpHeaders.CONTENT_DISPOSITION, "");
+        response.setHeader(HttpHeaders.CONTENT_DISPOSITION, "");
     }
 
     public static void setExportResponseHeader(ExportContext exportContext) {
@@ -57,8 +57,7 @@ public class ResponseHelper {
     protected static String getDownloadFileName(ExportContext exportContext) {
         String fileName = exportContext.exportParam().getTableName();
         if (!StringUtils.hasText(fileName)) {
-            ExportHelper exportHelper = exportContext.exportHelper();
-            fileName = exportHelper.getSheetName(exportContext.exportClass());
+            fileName = ExportHelper.getSheetName(exportContext.exportClass());
         }
         return fileName;
     }

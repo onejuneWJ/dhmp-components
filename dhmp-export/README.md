@@ -35,31 +35,61 @@
       @ReportColumn(value = "上架时间", pattern = BaseConstants.Pattern.DATETIME)
       @TableField(FIELD_LAST_UPDATE_DATE)
       private LocalDateTime lastUpdate;
-      /**
-       * 模拟报错
-       */
-      @ReportColumn(value = "上架时间2", pattern = BaseConstants.Pattern.DATETIME)
-      @TableField(FIELD_LAST_UPDATE_DATE)
-      private LocalDate lastUpdatedDate;
   
   }
   ```
+- service层
+  ```java
+  
+  public interface ProductService {
+      List<Product> list();
+  }
+  
+  @Service
+  public class ProductServiceImpl implements ProductService {
+  
+      /**
+       * 多层调用链都使用了@Export注解，不影响功能正常使用
+       */
+      @Export(Product.class)
+      @Overried
+      public List<Product> list() {
+        return Collections.emptyList();
+      }
+  }
+  
+  ```
+
+
 - 导出接口使用
     ```java
     @Controller
-    class Controller {
+    @RequestMapping("/product")
+    public class ProductController {
+        private final ProductService productService;
+        
+        public ProductController(ProductService productService) {
+            this.productService = productService;
+        }
+  
         @GetMapping("/export")
         @Export(Product.class)
-        public ResponseEntity<List<Product>> exportContext(ExportContext exportContext) {
-            return ResponseEntity.ok(productMapper.selectList(Wrappers.emptyWrapper()));
+        public ResponseEntity<List<Product>> export1() {
+            return ResponseEntity.ok(productService.list());
+        }
+  
+        @GetMapping("/export2")
+        public void export2() {
+            // 此处service层标记了导出注解，也可实现导出
+            productService.list();
         }
     }
     ```
-  * 接口方法使用com.zznode.dhmp.export.annotation.Export注解标注,value值为导出的实体类。export注解必须标记在controller的方法上。
-  * 方法参数必需有一个com.zznode.dhmp.export.ExportContext类型的参数(即使业务上不会使用)
+  * 接口方法使用com.zznode.dhmp.export.annotation.Export注解标注,value值为导出的实体类。
+  * Export注解也可标记在下层组件方法上，被Export注解标记的方法返回类型必须是Iterable<T>，T为导出的实体类。此时controller层方法可以返回void。
 - 前端请求
   ```text
-  /export-context?requestType=DATA&type=CSV&columns=goodsName,priceUnit,createdDate
+  localhost:8080/product/export?type=CSV&columns=goodsName,priceUnit,createdDate
   ```
   
 

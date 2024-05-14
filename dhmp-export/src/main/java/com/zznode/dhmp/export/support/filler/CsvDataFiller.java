@@ -1,10 +1,11 @@
-package com.zznode.dhmp.export.filler;
+package com.zznode.dhmp.export.support.filler;
 
 import cn.hutool.core.io.FastStringWriter;
 import cn.hutool.core.text.csv.CsvWriteConfig;
 import cn.hutool.core.text.csv.CsvWriter;
 import com.zznode.dhmp.export.ExportContext;
-import com.zznode.dhmp.export.dto.ExportParam;
+import com.zznode.dhmp.export.ExportParam;
+import com.zznode.dhmp.export.utils.ExportHelper;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -23,8 +24,8 @@ public class CsvDataFiller extends AbstractDataFiller {
     private final CsvWriter csvWriter;
     private final FastStringWriter fastStringWriter;
 
-    public CsvDataFiller(ExportContext exportContext) {
-        super(exportContext);
+    public CsvDataFiller(ExportContext exportContext, ExportHelper exportHelper) {
+        super(exportContext, exportHelper);
         this.fastStringWriter = new FastStringWriter();
         ExportParam exportParam = exportContext.exportParam();
         CsvWriteConfig csvWriteConfig = CsvWriteConfig.defaultConfig();

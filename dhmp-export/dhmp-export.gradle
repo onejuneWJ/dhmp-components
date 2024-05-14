@@ -1,14 +1,13 @@
 
 dependencies{
     api(project(":dhmp-core"))
-    api(project(":dhmp-data-commons"))
-    api(project(":dhmp-lov"))
     api("org.springframework:spring-web")
     api("org.springframework:spring-aop")
     api("com.fasterxml.jackson.core:jackson-databind")
-    api("org.aspectj:aspectjweaver")
     api("org.apache.poi:poi")
     api("org.apache.poi:poi-ooxml")
 
-    optional("org.apache.tomcat.embed:tomcat-embed-core")
+    optional(project(":dhmp-lov"))
+    optional("org.springframework:spring-webmvc")
+    optional("jakarta.servlet:jakarta.servlet-api")
 }

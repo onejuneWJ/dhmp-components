@@ -1,6 +1,4 @@
-package com.zznode.dhmp.export.exporter;
-
-import com.zznode.dhmp.export.ExportConfig;
+package com.zznode.dhmp.export.support.exporter;
 
 import java.io.IOException;
 
@@ -20,10 +18,4 @@ public interface Exporter {
      */
     void export(Iterable<?> data) throws IOException;
 
-    /**
-     * 配置
-     *
-     * @param exportConfig 配置
-     */
-    void configure(ExportConfig exportConfig);
 }

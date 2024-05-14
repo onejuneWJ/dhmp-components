@@ -17,22 +17,18 @@ import java.util.Base64;
 public class FilenameUtils {
 
     public static String encodeFileName(HttpServletRequest request, String filename) throws IOException {
-        if (request == null) {
-            return URLEncoder.encode(filename, StandardCharsets.UTF_8);
+        String userAgent = request.getHeader("User-Agent");
+        String encodeFilename;
+        // 解决输出中文名乱码的问题
+        if (!StringUtils.hasText(userAgent)) {
+            encodeFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8);
+        } else if (!userAgent.contains("MSIE") && !userAgent.contains("like Gecko")) {
+            encodeFilename = "=?UTF-8?B?" + Base64.getEncoder().encodeToString(filename.getBytes(StandardCharsets.UTF_8)) + "?=";
         } else {
-            String userAgent = request.getHeader("User-Agent");
-            String encodeFilename;
-            // 解决输出中文名乱码的问题
-            if (!StringUtils.hasText(userAgent)) {
-                encodeFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8);
-            } else if (!userAgent.contains("MSIE") && !userAgent.contains("like Gecko")) {
-                encodeFilename = "=?UTF-8?B?" + Base64.getEncoder().encodeToString(filename.getBytes(StandardCharsets.UTF_8)) + "?=";
-            } else {
-                encodeFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8);
-            }
-
-            return encodeFilename;
+            encodeFilename = URLEncoder.encode(filename, StandardCharsets.UTF_8);
         }
+
+        return encodeFilename;
     }
 
 }
