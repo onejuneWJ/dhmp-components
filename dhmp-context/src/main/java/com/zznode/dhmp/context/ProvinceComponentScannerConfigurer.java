@@ -15,10 +15,18 @@ import org.springframework.util.ClassUtils;
 import org.springframework.util.StringUtils;
 
 /**
- * 描述
+ * 实现BeanDefinitionRegistryPostProcessor，在{@link org.springframework.context.annotation.ConfigurationClassPostProcessor ConfigurationClassPostProcessor}处理完之后，
+ * 扫描包中带有{@link ProvinceComponent @ProvinceComponent}注解的类，并注册到spring容器中。
+ * 在此之前，大部分除了带有{@link ProvinceComponent @ProvinceComponent}注解bean都已经被注册到容器中。
+ *
+ * <p>
+ * 注意，配置类不要使用{@link ProvinceComponent @ProvinceComponent}注解，因为{@link ProvinceComponentScanner}扫描完成的bean将直接注册到容器中，
+ * 不会被{@link org.springframework.context.annotation.ConfigurationClassParser}处理，所以配置类中的bean配置或者其注解将会无效。
+ * 配置类中请使用{@link com.zznode.dhmp.context.condition.ConditionalOnProvince @ConditionalOnProvince}
  *
  * @author 王俊
  * @date create in 2023/7/7 10:01
+ * @see ProvinceComponentScanner
  */
 public class ProvinceComponentScannerConfigurer implements BeanDefinitionRegistryPostProcessor, BeanFactoryAware, BeanClassLoaderAware {
 

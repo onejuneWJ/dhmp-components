@@ -15,10 +15,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 /**
- * 描述
+ * ImportBeanDefinitionRegistrar实现。用于注册ProvinceComponentScannerConfigurer
  *
  * @author 王俊
  * @date create in 2023/7/7 10:00
+ * @see ProvinceComponentScannerConfigurer
  */
 public class ProvinceComponentScannerRegistrar implements ImportBeanDefinitionRegistrar {
 

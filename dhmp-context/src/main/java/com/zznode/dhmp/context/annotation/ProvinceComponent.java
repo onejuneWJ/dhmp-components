@@ -12,11 +12,7 @@ import java.lang.annotation.*;
  * 代替@Component注解，该组件将从Spring的组件扫描中排除, 并会重新被注册对应省份的组件实现。
  * <p>
  * 注意:
- * <li>该注解只会在{@link ProvinceComponentScanner ProvinceCustomizerBeanScanner}扫描到的组件生效，其他bean声明方式请使用{@link ConditionalOnProvince}</li>
- * <li>
- * 如果你直接使用{@link ProvinceComponentScanner ProvinceCustomizerBeanScanner}而不是依赖于@SpringBootApplication,
- * 你应该确保{@link ProvinceComponentExcludeFilter}被声明为excludeFilter,否则被标记的组件将会被重复注册,导致出错
- * </li>
+ * <li>该注解只会在{@link ProvinceComponentScanner ProvinceComponentScanner}扫描到的组件生效，其他bean声明方式请使用{@link ConditionalOnProvince}</li>
  * <li>
  * 如果此类标记的父类，在配置类({@link org.springframework.context.annotation.Configuration @Configuration} 类)中被声明为bean，由于优先级问题，在扫描组件的时候，找不到父类定义的bean，则不会移除父类定义的bean。
  * <p>此时需要将此组件使用{@link org.springframework.context.annotation.Primary @Primary}标记
