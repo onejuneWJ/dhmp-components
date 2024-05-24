@@ -4,5 +4,4 @@ dependencies{
     api(project(":dhmp-context"))
     api("org.springframework:spring-jdbc")
     api("org.springframework:spring-aop")
-    api("org.aspectj:aspectjweaver")
 }

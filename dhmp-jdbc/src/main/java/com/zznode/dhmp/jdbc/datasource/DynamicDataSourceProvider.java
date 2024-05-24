@@ -1,6 +1,5 @@
 package com.zznode.dhmp.jdbc.datasource;
 
-import javax.sql.DataSource;
 import java.util.Map;
 
 /**
@@ -9,17 +8,23 @@ import java.util.Map;
  * @author 王俊
  * @date create in 2023/8/29
  */
-public interface DataSourceProvider {
+public interface DynamicDataSourceProvider {
 
     /**
      * 获取数据源映射
+     *
      * @return 数据源映射map
      */
     Map<Object, Object> getDataSources();
 
     /**
-     * 获取主要数据源
-     * @return 主要数据源
+     * 获取默认数据源
+     *
+     * @return 默认数据源
      */
-    DataSource getMasterDataSource();
+    Object getDefaultDataSource();
+
+    default void addDataSource(String dataSourceName, Object dataSource) {
+
+    }
 }

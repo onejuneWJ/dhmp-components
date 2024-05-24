@@ -18,9 +18,18 @@ import java.lang.annotation.*;
 @Documented
 public @interface UseDynamicDataSource {
 
+    /**
+     * 数据源类型, 值为{@link org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource AbstractRoutingDataSource} 中targetDataSources的key
+     * @see com.zznode.dhmp.jdbc.datasource.DynamicDataSource
+     * @see org.springframework.jdbc.datasource.lookup.AbstractRoutingDataSource
+     */
     @AliasFor(attribute = "dataSourceType")
     String value() default DataSourceType.MASTER;
 
+    /**
+     *
+     * @see #value()
+     */
     @AliasFor(attribute = "value")
     String dataSourceType() default DataSourceType.MASTER;
 }

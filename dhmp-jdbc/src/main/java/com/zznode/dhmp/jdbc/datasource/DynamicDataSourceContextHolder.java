@@ -9,7 +9,10 @@ import org.springframework.util.Assert;
  * @date create in 2023/5/25 15:14
  */
 public class DynamicDataSourceContextHolder {
-    private static final ThreadLocal<String> CONTEXT_HOLDER = new ThreadLocal<>();
+    /**
+     * 线程变量用于保存数据源类型
+     */
+    private static final ThreadLocal<String> CONTEXT_HOLDER = ThreadLocal.withInitial(() -> DataSourceType.MASTER);
 
 
     public static synchronized void setDataSourceType(String dataSourceType) {

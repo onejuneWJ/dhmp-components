@@ -13,6 +13,11 @@ public interface DataSourceType {
     String MASTER = "master";
 
 
+    /**
+     * 下面的类型为建议定义的数据源类型
+     */
+    String MYSQL = "mysql";
+    String ORACLE = "oracle";
     String HGU_SPARK = "hgu-spark";
     String STB_SPARK = "stb-spark";
     String HBASE = "hbase";
