@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 描述
+ * 远程调用，添加任务执行记录
  *
  * @author 王俊
  */

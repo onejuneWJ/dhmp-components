@@ -1,12 +1,13 @@
 package com.zznode.dhmp.schedule.annotation;
 
+import com.zznode.dhmp.schedule.AbstractJobHandler;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.*;
 
 /**
  * 标记次注解，将类标记为任务执行类。
- * <p> 标记的类必须继承{@link com.zznode.dhmp.schedule.handler.AbstractJobHandler}
+ * <p> 标记的类必须继承{@link AbstractJobHandler}
  * @author 王俊
  */
 @Target({ElementType.TYPE})

@@ -2,10 +2,9 @@ dependencies {
     api(project(":dhmp-core"))
     api(project(":dhmp-context"))
     api(project(":dhmp-jdbc"))
-    api(project(":dhmp-data-commons"))
+    api(project(":dhmp-web"))
     api("org.springframework:spring-beans")
     api("org.springframework:spring-context-support")
-    api("org.springframework:spring-webflux")
     api("org.quartz-scheduler:quartz") {
         exclude group: "org.slf4j", module: "slf4j-api"
     }

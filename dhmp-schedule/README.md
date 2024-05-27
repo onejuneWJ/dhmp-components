@@ -17,7 +17,7 @@
     @ProvinceComponent(provinces = Province.JI_LIN)
     public class TestTask extends AbstractJobHandler {
         @Override
-        protected void runInternal() {
+        protected void runInternal(JobExecutionContext context) {
             logger.info("running test1");
         }
     }
