@@ -3,6 +3,7 @@ dependencies {
     api("org.springframework:spring-web")
     api("org.springframework:spring-context")
     api("org.springframework:spring-jdbc")
+    api("org.springframework:spring-aop")
     api("org.springframework:spring-tx")
     api("org.springframework.data:spring-data-commons") {
         exclude group: "org.slf4j", module: "slf4j-api"
